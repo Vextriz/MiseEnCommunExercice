@@ -1,0 +1,17 @@
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.Form1.resources
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.Properties.Resources.resources
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.GenerateResource.cache
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.CoreCompileInputs.cache
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\Mise_En_Commun.exe.config
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\Mise_En_Commun.exe
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\Mise_En_Commun.pdb
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.exe
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.pdb
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\BouncyCastle.Crypto.dll
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\itextsharp.dll
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\itextsharp.xml
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.CopyComplete
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.AssemblyReference.cache
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.JustePDF.resources
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\obj\Debug\Mise_En_Commun.ErreurPDF.resources
+U:\A21\MiseEnCommun\Mise_En_Commun\Mise_En_Commun\bin\Debug\Control.Draggable.dll
