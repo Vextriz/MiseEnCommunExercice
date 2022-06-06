@@ -448,7 +448,6 @@ namespace Mise_En_Commun
             var blueListTextFont = FontFactory.GetFont("Arial", 18, 1, new BaseColor(Color.Blue));
             var redListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Red));
             var redListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Red));
-
             var greenListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Green));
             var greenListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Green));
 
