@@ -42,7 +42,7 @@
             this.gbJuste.ForeColor = System.Drawing.Color.Green;
             this.gbJuste.Location = new System.Drawing.Point(0, 0);
             this.gbJuste.Name = "gbJuste";
-            this.gbJuste.Size = new System.Drawing.Size(550, 175);
+            this.gbJuste.Size = new System.Drawing.Size(550, 261);
             this.gbJuste.TabIndex = 1;
             this.gbJuste.TabStop = false;
             this.gbJuste.Text = "groupBox1";

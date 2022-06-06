@@ -34,7 +34,7 @@ namespace Mise_En_Commun
         GroupBox groupBoxVoc = new GroupBox();
         Button Finalisation = new Button();
         Button Recommencer_Conjugaison = new Button();
-        Button AideConjugaison = new Button();
+        PictureBox AideConjugaison = new PictureBox();
         FlowLayoutPanel panelJuste = new FlowLayoutPanel();
         FlowLayoutPanel panelFautes = new FlowLayoutPanel();
         Button btnGenererPDF = new Button();
@@ -149,18 +149,26 @@ namespace Mise_En_Commun
             grbFr.Text = motsFR;
 
             int nterm = -1;
+            string gbVerbe = "";
+            string gbVerbeEsp = "";
             string term = motsESP.Substring(motsESP.Length - 2, 2);
             if (term == "ar")
             {
                 nterm = 1;
+                gbVerbe = "1er groupe";
+                gbVerbeEsp = "primer grupo";
             }
             else if (term == "er")
             {
                 nterm = 2;
+                gbVerbe = "2ème groupe";
+                gbVerbeEsp = "segundo grupo";
             }
             else
             {
                 nterm = 3;
+                gbVerbe = "3ème groupe";
+                gbVerbe = "tercer grupo";
             }
             string requêteTemp = @"SELECT libPersonne,traducPersonne FROM Personne";
             OleDbCommand cd1 = new OleDbCommand(requêteTemp, connec);
@@ -216,6 +224,16 @@ namespace Mise_En_Commun
             LTemps.Location = new System.Drawing.Point(43, 64);
             LTemps.Text = " Cet Exercices est au : " + LibTemps;
             grbFr.Controls.Add(LTemps);
+            Label GroupeVerbe = new Label();
+            GroupeVerbe.Size = new System.Drawing.Size(300, 19);
+            GroupeVerbe.Location = new System.Drawing.Point(43, 124);
+            GroupeVerbe.Text = "Le verbe " +motsFR+ " est du : " + gbVerbe;
+            grbFr.Controls.Add(GroupeVerbe);
+            Label GroupeVerbeEsp = new Label();
+            GroupeVerbeEsp.Size = new System.Drawing.Size(300, 19);
+            GroupeVerbeEsp.Location = new System.Drawing.Point(743, 124);
+            GroupeVerbeEsp.Text = "El verbo " + motsESP + " es del : " + gbVerbe;
+            grbFr.Controls.Add(GroupeVerbeEsp);
             string RequeteTraducTemps = @"SELECT traducTemps 
             FROM Temps WHERE [codeTemps] = " + codeTemps + "";
             cd.CommandText = RequeteTraducTemps;
@@ -240,8 +258,9 @@ namespace Mise_En_Commun
             }
 
             AideConjugaison.Location = new System.Drawing.Point(50, 678);
-            AideConjugaison.Size = new System.Drawing.Size(120, 54);
-            AideConjugaison.Text = "Aide de l\'exercice";
+            AideConjugaison.Size = new System.Drawing.Size(51, 51);
+            AideConjugaison.Image =   Image.FromFile(@"../../Photo/Aide.png");
+            AideConjugaison.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             AideConjugaison.Click += new System.EventHandler(Aide_Conjugaison);
             Valider.Click += new System.EventHandler(Valider_Click);
             Valider.Location = new System.Drawing.Point(438, 626);
@@ -426,28 +445,46 @@ namespace Mise_En_Commun
 
             PdfContentByte pbtext = pdf.DirectContent;
             Dictionary<int, List<string>> lsf = dico();
+            var blueListTextFont = FontFactory.GetFont("Arial", 18, 1, new BaseColor(Color.Blue));
+            var redListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Red));
+            var redListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Red));
+
+            var greenListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Green));
+            var greenListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Green));
+
             BaseFont bf = BaseFont.CreateFont(@"C:\Windows\Fonts\arial.TTF", BaseFont.WINANSI, true);
-            document.Add(new Paragraph("Voici la list de vos erreurs ainsi que leur correction"));
+            document.Add(new Paragraph("Résumé de vos exercices",blueListTextFont));
+            document.Add(new Paragraph("\n"));
+            document.Add(new Paragraph("\n"));
+            document.Add(new Paragraph("Voici la liste de vos erreurs ainsi que leur correction : ",redListTextFontBold));
+            document.Add(new Paragraph("\n"));
+
             foreach (KeyValuePair<int, List<string>> kvp in lsf)
             {
                 if (kvp.Value != null)
                 {
-                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString()));
+                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString(),redListTextFont));
                     for (int i = 0; i < kvp.Value.Count; i++)
                     {
-                        document.Add(new Paragraph(kvp.Value[i]));
+                        document.Add(new Paragraph(kvp.Value[i],redListTextFont));
                     }
+                    document.Add(new Paragraph("\n"));
+
                 }
             }
-            document.Add(new Paragraph("Voici la liste des exercices que vous avez réussi sans commettre de fautes"));
+            document.Add(new Paragraph("Voici la liste des exercices que vous avez réussi sans commettre de fautes : ",greenListTextFontBold));
+            document.Add(new Paragraph("\n"));
+
 
             foreach (KeyValuePair<int, List<string>> kvp in lsf)
             {
                 if (kvp.Value == null)
                 {
 
-                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString()));
-                    document.Add(new Paragraph("Exercice réussi bravo "));
+                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString(),greenListTextFont));
+                    document.Add(new Paragraph("Exercice réussi bravo ",greenListTextFont));
+                    document.Add(new Paragraph("\n"));
+
                 }
             }
 
