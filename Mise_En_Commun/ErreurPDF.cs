@@ -45,8 +45,16 @@ namespace Mise_En_Commun
             {
                 Label l = new Label();
                 l.Location = new System.Drawing.Point(15, 40 + r);
+                l.Size = new System.Drawing.Size(300, 20);
                 l.ForeColor = Color.Red;
-                l.Text = ls[i];
+                if (i % 2 != 0)
+                {
+                    l.Text = "Votre erreur est :  "+ls[i];
+                }
+                else
+                {
+                    l.Text = "La correction est :  " + ls[i];
+                }
                 r = r + 25;
                 f = f + 1;
                 if (f == 2)

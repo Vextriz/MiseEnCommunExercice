@@ -81,6 +81,7 @@
     <Compile Include="UserControlExo4.Designer.cs">
       <DependentUpon>UserControlExo4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilisateur.cs" />
     <EmbeddedResource Include="ErreurPDF.resx">
       <DependentUpon>ErreurPDF.cs</DependentUpon>
     </EmbeddedResource>

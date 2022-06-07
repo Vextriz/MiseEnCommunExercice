@@ -25,8 +25,10 @@ namespace Mise_En_Commun
         OleDbConnection connec = new OleDbConnection();
         string chcon = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=U:\A21\frm_EspagnolTrad-1.git\baseLangue.mdb";
         int exoNum = 0;
+        string coursNum = "";
+        int leconNum = 0;
         // Exercice Conjugaison
-        GroupBox Exercice = new GroupBox();
+        Panel Exercice = new Panel();
         GroupBox grbFr = new GroupBox();
         GroupBox grbEsp = new GroupBox();
         Button Valider = new Button();
@@ -52,7 +54,12 @@ namespace Mise_En_Commun
         /* Ceci nous servira à savoir combien de fois l'utilisateur à demander de l'aide (en réalité, l'utilisateur a le droit à 4 fois d'être aidé au max, mais par 
          soucis d'un label qui ne se positionne pas correctement, je le mets à 5 (+1)*/
         int cptAide = 3;
-
+        // Table Local PDF
+        DataTable TableLocal = new DataTable("PDF");
+        int incrematationTableLocal = 0;
+        Utilisateur user = new Utilisateur("Torregrossa");
+        Dictionary<int, List<string>> dico = new Dictionary<int, List<string>>();
+        List<string> listDico = new List<string>();
 
 
 
@@ -69,50 +76,10 @@ namespace Mise_En_Commun
             this.Controls.Add(Finalisation);
 
         }
-        public Dictionary<int, List<string>> dico()
-        {
-            List<string> ls = new List<string>();
-            Dictionary<int, List<string>> lsf = new Dictionary<int, List<string>>();
-            ls.Clear();
-            lsf.Add(1, null);
-            lsf.Add(4, null);
-            lsf.Add(5, null);
-            ls.Clear();
-            lsf.Add(7, null);
-            ls.Clear();
-            lsf.Add(14, null);
-            ls.Clear();
-            lsf.Add(6, null);
-            ls.Clear();
-            lsf.Add(8, null);
-            ls.Clear();
-            lsf.Add(9, null);
-            ls.Clear();
-            lsf.Add(10, null);
-            ls.Clear();
-            lsf.Add(11, null);
-            ls.Clear();
-            lsf.Add(12, null);
-            ls.Clear();
-            lsf.Add(13, null);
-            ls.Clear();
-
-            ls.Add("Coma esto");
-            ls.Add("Coma esta");
-            ls.Add("Léo est chauve");
-            ls.Add("Léo n'est pas chauve");
-            lsf.Add(2, ls);
-            List<string> lsd = new List<string>();
-
-            lsd.Add("Mbappe va au Réal");
-            lsd.Add("Mbappe reste au PSG");
-            lsf.Add(3, lsd);
-            return lsf;
-        }
+       
         private void Exo_Conjugaison()
         {
             Exercice.Controls.Add(Finalisation);
-
             //GroupBox grbFr = new GroupBox();
             grbFr.Location = new System.Drawing.Point(50, 50);
             grbFr.Size = new System.Drawing.Size(1200, 200);
@@ -375,7 +342,7 @@ namespace Mise_En_Commun
             btnGenererPDF.Text = "Generer PDF";
             btnGenererPDF.Click += new System.EventHandler(btnGenererPDF_Click);
             List<string> ls = new List<string>();
-            Dictionary<int, List<string>> lsf = dico();
+            Dictionary<int, List<string>> lsf = dico;
             int r = 0;
             int v = 0;
             int nbimageE = 1;
@@ -444,7 +411,7 @@ namespace Mise_En_Commun
             //document.Add(bof);
 
             PdfContentByte pbtext = pdf.DirectContent;
-            Dictionary<int, List<string>> lsf = dico();
+            Dictionary<int, List<string>> lsf = dico;
             var blueListTextFont = FontFactory.GetFont("Arial", 18, 1, new BaseColor(Color.Blue));
             var redListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Red));
             var redListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Red));
@@ -494,7 +461,6 @@ namespace Mise_En_Commun
     
     private void Valider_Click(object sender, EventArgs e)
         {
-            bool juste = false;
             bool gagné = false;
             int just = 0;
             foreach (TextBox c in grbEsp.Controls.OfType<TextBox>())
@@ -504,7 +470,6 @@ namespace Mise_En_Commun
                 {
                     c.Text = "Good";
                     //   c.BackColor = Color.Green;
-                    juste = true;
 
                 }
                 if (c.Text == "Good")
@@ -517,18 +482,20 @@ namespace Mise_En_Commun
                 {
                     gagné = false;
                 }
-                if (c.Text != c.Tag.ToString() && c.Text != "Good" & c.Text is null)
+                if (c.Text != c.Tag.ToString() && c.Text != "Good" && c.Text != "")
                 {
                     c.BackColor = Color.Red;
+                    listDico.Add(c.Text);
+                    listDico.Add(c.Tag.ToString());
                 }
-            }
-            if (juste == false)
-            {
-                MessageBox.Show("Erreur");
             }
             if (gagné == true)
             {
-                MessageBox.Show("Bravo");
+                MessageBox.Show("Bravo vous avez finis l'exercice");
+            }
+            for (int i = 0; i < listDico.Count; i++)
+            {
+                MessageBox.Show(listDico[i]);
             }
 
         }
@@ -2122,22 +2089,37 @@ namespace Mise_En_Commun
             Exercice.Controls.Clear();
             exoNum = exoNum + 1;
             // MessageBox.Show(exoNum.ToString());
-
-            if (exoNum == 1)
-            {
-                Exerices_Vocabulaire();
-            }
-            else if (exoNum == 2)
+           string requêteTypeExo  = "@SELECT enonceExo FROM Exercices " +
+                "where [numExo] = "+ exoNum + " and [numCours] = '"+ coursNum+ " and [numLecon] = "+leconNum+"";
+            OleDbCommand cd = new OleDbCommand();
+            cd.Connection = connec;
+            cd.CommandType = CommandType.Text;
+            cd.CommandText = requêteTypeExo;
+            string TypeExo = cd.ExecuteScalar().ToString();
+            if (TypeExo == "Conjuguez à l'imperfecto…" || TypeExo == "Présent des verbes en \"ar\"" || TypeExo == "Présent des verbes en \"er\"" || TypeExo == "Présent des verbes en \"ir\"")
             {
                 Exo_Conjugaison();
+                dico.Add(exoNum, listDico);
+                listDico.Clear();
+                RemplirTableLocal();
             }
             else if (exoNum == 3)
             {
                 Exo_Mot_à_trou();
+                dico.Add(exoNum, listDico);
+                listDico.Clear();
             }
             else if (exoNum == 4)
             {
                 Exo_Glissage_Mot();
+                dico.Add(exoNum, listDico);
+                listDico.Clear();
+            }
+            if (exoNum ==   )
+            {
+                Exerices_Vocabulaire();
+                dico.Add(exoNum, listDico);
+                listDico.Clear();
             }
             else
                 PDF();
@@ -2151,6 +2133,118 @@ namespace Mise_En_Commun
                 c.BackColor = Color.White;
             }
             Exercice.Controls.Add(AideConjugaison);
+        }
+
+        private void RemplirTableLocal()
+        {
+            DataColumn column;
+            DataRow row;
+
+            // Create new DataColumn, set DataType,
+            // ColumnName and add to DataTable.
+
+            //Colonne NumElementPDF
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "NumElementPDF";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne CodUtil
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "CodUtil";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne NumExo
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "NumExoPDF";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne NumCours
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.String");
+            column.ColumnName = "numCoursPDF";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne NumLecon
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "numLeconPDF";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne JusteouFaux
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Boolean");
+            column.ColumnName = "JusteouFaux";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne Erreur
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.String");
+            column.ColumnName = "Erreur";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            //Colonne Correction 
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.String");
+            column.ColumnName = "Correction";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+
+            // Colonne Primaire attribution NumElementPDF
+            DataColumn[] PrimaryKeyColumns = new DataColumn[1];
+            PrimaryKeyColumns[0] = TableLocal.Columns["NumElementPDF"];
+            TableLocal.PrimaryKey = PrimaryKeyColumns;
+            foreach ( KeyValuePair<int,List<string>> kvp in dico)
+            {
+                incrematationTableLocal++;
+                row = TableLocal.NewRow();
+                row["NumElementPDF"] = incrematationTableLocal;
+                row["CodUtil"] = user.NemUser();
+                row["NumExoPDF"] = kvp.Key;
+                row["numCoursPDF"] = user.getExosInfo()[0, 2];
+                row["numLeconPDF"] = user.getExosInfo()[0, 1];
+                if ( kvp.Value != null)
+                {
+                    for ( int i = 0; i<kvp.Value.Count;i++)
+                    {
+                        row["JusteouFaux"] = false;
+                        if ( i%2!= 0 )
+                        {
+                            row["Erreur"] = kvp.Value[i];
+                        }
+                        else
+                        {
+                            row["Correction"] = kvp.Value[i];
+                        }
+                    }
+               
+                }
+                else
+                {
+                    row["JusteouFaux"] = true;
+                    row["Erreur"] = null;
+                    row["Correction"] = null;
+                }
+
+            }
+            dico.Clear();
         }
 
     }
