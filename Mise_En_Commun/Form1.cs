@@ -2089,41 +2089,55 @@ namespace Mise_En_Commun
             Exercice.Controls.Clear();
             exoNum = exoNum + 1;
             // MessageBox.Show(exoNum.ToString());
-           string requêteTypeExo  = "@SELECT enonceExo FROM Exercices " +
-                "where [numExo] = "+ exoNum + " and [numCours] = '"+ coursNum+ " and [numLecon] = "+leconNum+"";
+            string requêteVoc = "@SELECT enonceExo FROM Exercices " +
+               "where [numExo] = " + exoNum + " and [numCours] = '" + coursNum + " and [numLecon] = " + leconNum + " and [codePhrase] == 0";
             OleDbCommand cd = new OleDbCommand();
             cd.Connection = connec;
             cd.CommandType = CommandType.Text;
-            cd.CommandText = requêteTypeExo;
+            cd.CommandText = requêteVoc;
+            string Vocabulaire = cd.ExecuteScalar().ToString();
+            string requêteTypeExo  = "@SELECT enonceExo FROM Exercices " +
+                "where [numExo] = "+ exoNum + " and [numCours] = '"+ coursNum+ " and [numLecon] = "+leconNum+"";
+            OleDbCommand cd1 = new OleDbCommand();
+            cd1.Connection = connec;
+            cd1.CommandType = CommandType.Text;
+            cd1.CommandText = requêteTypeExo;
             string TypeExo = cd.ExecuteScalar().ToString();
-            if (TypeExo == "Conjuguez à l'imperfecto…" || TypeExo == "Présent des verbes en \"ar\"" || TypeExo == "Présent des verbes en \"er\"" || TypeExo == "Présent des verbes en \"ir\"")
+            if (TypeExo.Substring(0, 3) == "Con" || TypeExo.Substring(0, 3) == "Pré")
             {
                 Exo_Conjugaison();
                 dico.Add(exoNum, listDico);
                 listDico.Clear();
                 RemplirTableLocal();
+                exoNum++;
             }
-            else if (exoNum == 3)
+            else if (TypeExo.Substring(0, 9) == "Complétez")
             {
                 Exo_Mot_à_trou();
                 dico.Add(exoNum, listDico);
                 listDico.Clear();
+                RemplirTableLocal();
+                exoNum++;
             }
-            else if (exoNum == 4)
-            {
-                Exo_Glissage_Mot();
-                dico.Add(exoNum, listDico);
-                listDico.Clear();
-            }
-            if (exoNum ==   )
+            else if (TypeExo == Vocabulaire)
             {
                 Exerices_Vocabulaire();
                 dico.Add(exoNum, listDico);
                 listDico.Clear();
+                RemplirTableLocal();
+                exoNum++;
             }
-            else
-                PDF();
-            
+            else if (exoNum > 15)
+            PDF();
+            else 
+            {
+                Exo_Glissage_Mot();
+                dico.Add(exoNum, listDico);
+                listDico.Clear();
+                RemplirTableLocal();
+                exoNum++;
+            }
+
         }
         private void Recommencer_Exo(object sender, EventArgs e)
         {
