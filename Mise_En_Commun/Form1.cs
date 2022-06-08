@@ -42,10 +42,11 @@ namespace Mise_En_Commun
         FlowLayoutPanel panelJuste = new FlowLayoutPanel();
         FlowLayoutPanel panelFautes = new FlowLayoutPanel();
         Button btnGenererPDF = new Button();
+        Button AccèsPDF = new Button();
         Label ExoJuste = new Label();
         Label ExoFaux = new Label();
-        DataSet dsLocal = new DataSet();
         // partiKarim
+        DataSet dsLocal = new DataSet();
         Label lblTraductionEspagnol = new Label();
         Label lblPhraseATraduire = new Label();
         Label lblEnonce = new Label();
@@ -69,7 +70,7 @@ namespace Mise_En_Commun
           //  connec.ConnectionString = chcon;
            // connec.Open();
             exoNum = 0;
-            coursNum = "PAYSCULT";
+            coursNum = "GRAMM1";
             leconNum = 1;
             DataColumn column;
 
@@ -90,6 +91,10 @@ namespace Mise_En_Commun
             column.ReadOnly = true;
             column.Unique = false;
             TableLocal.Columns.Add(column);
+            AccèsPDF.Location = new System.Drawing.Point(1150, 5);
+            AccèsPDF.Size = new System.Drawing.Size(100, 50);
+            AccèsPDF.Text = "Accès au PDF";
+            AccèsPDF.Click += new System.EventHandler(btnAccèsPDF_Clik);
             Finalisation.Click += new System.EventHandler(Exo_Suivant);
             Finalisation.Location = new System.Drawing.Point(1220, 678);
             Finalisation.Size = new System.Drawing.Size(120, 54);
@@ -104,6 +109,7 @@ namespace Mise_En_Commun
 
         private void Exo_Conjugaison()
         {
+            Exercice.Controls.Add(AccèsPDF);
             Exercice.Controls.Add(Finalisation);
             //GroupBox grbFr = new GroupBox();
             grbFr.Location = new System.Drawing.Point(50, 50);
@@ -117,22 +123,26 @@ namespace Mise_En_Commun
             connec.ConnectionString = chcon;
             connec.Open();
 
-            string filtre = " WHERE [ConcerneMots.numExo] = " + exoNum + " AND " +
-               "[ConcerneMots.numLecon] = " + leconNum + "AND [ConcerneMots.numCours] = '" + coursNum + "'";
-            string requêteESP = @"SELECT Mots.libMot
-            FROM ((ConcerneMots INNER JOIN  Mots ON ConcerneMots.numMot = Mots.numMot) " + filtre;
+            string filtre = " WHERE [Exercices.numExo] = " + exoNum + " AND " +
+               "[Exercices.numLecon] = " + leconNum + " AND [Exercices.numCours] = '" + coursNum + "' ";
+            string codeVerbe =  @"SELECT codeVerbe FROM Exercices " + filtre;
             OleDbCommand cd = new OleDbCommand();
             cd.Connection = connec;
             cd.CommandType = CommandType.Text;
-            cd.CommandText = requêteESP;
-            string motsESP = cd.ExecuteScalar().ToString();
+            cd.CommandText = codeVerbe;
+            int codeESP = (int)cd.ExecuteScalar();
+            string reqûeteESP = @"SELECT libMot FROM Mots where [numMot] =" +codeESP;
+
+            OleDbCommand cdd = new OleDbCommand();
+            cdd.Connection = connec;
+            cdd.CommandType = CommandType.Text;
+            cdd.CommandText = reqûeteESP;
+            string motsESP = cdd.ExecuteScalar().ToString();
+            MessageBox.Show(motsESP);
             grbEsp.Text = motsESP;
 
-            string requêteFR = @"SELECT Mots.traducMot
-            FROM ((ConcerneMots INNER JOIN
-                         Exercices ON ConcerneMots.numExo = Exercices.numExo) INNER JOIN
-                         Mots ON ConcerneMots.numMot = Mots.numMot) " + filtre;
-            cd.CommandText = requêteFR;
+            string requêteFR = @"SELECT libMot FROM Mots where [numMot] =" + codeESP;
+            cdd.CommandText = requêteFR;
             string motsFR = cd.ExecuteScalar().ToString();
             grbFr.Text = motsFR;
 
@@ -273,6 +283,7 @@ namespace Mise_En_Commun
         private void Exerices_Vocabulaire()
         {
             this.Controls.Add(Exercice);
+            Exercice.Controls.Add(AccèsPDF);
             Exercice.Controls.Add(Finalisation);
 
             Finalisation.Text = "Finalisation de l\'exercice";
@@ -341,8 +352,7 @@ namespace Mise_En_Commun
             }
             dt.Clear();
             tabExo4.Clear();
-
-            //
+            //listDico.Add(null);
             connec.Close();
         }
         private void PDF()
@@ -371,38 +381,36 @@ namespace Mise_En_Commun
             int v = 0;
             int nbimageE = 1;
             int nbimageJ = 1;
-            for ( int i = 0;i<TableLocal.Rows.Count;i++)
+            for (int i = 0; i < TableLocal.Rows.Count; i++)
             {
-                for (int j = 0; j < TableLocal.Columns.Count; j++)
+                if (TableLocal.Rows[i][1].ToString() != "")
                 {
-                    if (TableLocal.Rows[i][1] != null)
+                    ErreurPDF epdf = new ErreurPDF();
+                    epdf.Location = new System.Drawing.Point(15, 15 + r);
+                    epdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+                    epdf.Num = int.Parse(TableLocal.Rows[i][0].ToString());
+                    for (int j = 0; j < TableLocal.Columns.Count; j++)
                     {
-                        if (TableLocal.Rows[i][0] == TableLocal.Rows[i + 1][0] || TableLocal.Rows[i][0] == TableLocal.Rows[i - 1][0])
-                        {
-                            ls.Add(TableLocal.Rows[i][1].ToString());
-                        }
-                        ErreurPDF epdf = new ErreurPDF();
-                        epdf.Location = new System.Drawing.Point(15, 15 + r);
-                        epdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-                        epdf.Num = int.Parse(TableLocal.Rows[i][0].ToString());
-                        epdf.ls = ls;
-                        
-                        epdf.image = "e" + nbimageE.ToString() + ".jpg";
-                        panelFautes.Controls.Add(epdf);
-                        ls.Clear();
-                        for (int s = 0; s < ls.Count; s++)
-                        {
-                            if (s > 2)
-                                r = r + 100;
-                        }
-                        r = r + 125;
-                        nbimageE = nbimageE + 1;
-                        if (nbimageE > 4)
-                        {
-                            nbimageE = 1;
-                        }
+                        ls.Add(TableLocal.Rows[i][1].ToString());
                     }
-                    if (TableLocal.Rows[i][1] == null)
+                    epdf.ls = ls;
+                    MessageBox.Show(ls.Count.ToString());
+                    epdf.image = "e" + nbimageE.ToString() + ".jpg";
+                    panelFautes.Controls.Add(epdf);
+                    ls.Clear();
+                    for (int s = 0; s < ls.Count; s++)
+                    {
+                        if (s > 2)
+                            r = r + 100;
+                    }
+                    r = r + 125;
+                    nbimageE = nbimageE + 1;
+                    if (nbimageE > 4)
+                    {
+                        nbimageE = 1;
+                    }
+
+                    else
                     {
                         JustePDF jpdf = new JustePDF();
                         jpdf.Location = new System.Drawing.Point(15, 15);
@@ -418,7 +426,6 @@ namespace Mise_En_Commun
                         }
                     }
                 }
-
             }
             Exercice.Controls.Add(panelJuste);
             Exercice.Controls.Add(panelFautes);
@@ -429,9 +436,15 @@ namespace Mise_En_Commun
             panelFautes.AutoScroll = true;
             Exercice.Text = "PDF";
             this.Controls.Add(Exercice);
-
         }
-        private void btnGenererPDF_Click(object sender, EventArgs e)
+        private void btnAccèsPDF_Clik(object sender, EventArgs e)
+        {
+           // RemplirTableLocal();
+
+            Exercice.Controls.Clear();
+            PDF();
+        }
+            private void btnGenererPDF_Click(object sender, EventArgs e)
         {
             //Bitmap b =  CaptureScreen();
             //var codeBitmap = new Bitmap(b);
@@ -629,7 +642,7 @@ namespace Mise_En_Commun
                     lblPhraseTraductionEspagnol.AutoSize = true;
 
                     // Ajout à la collection des Controls du form
-                    this.Controls.Add(lblPhraseTraductionEspagnol);
+                    Exercice.Controls.Add(lblPhraseTraductionEspagnol);
 
 
                     // Nous n'allons pas incrémenter la même chose suivant la nature du prochain composant (Label ou TextBox)
@@ -664,7 +677,7 @@ namespace Mise_En_Commun
                     txtMotATrouver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(txtMotATrouver_KeyPress);
 
                     // Ajout à la collection des Controls du formulaire (pour l'afficher)
-                    this.Controls.Add(txtMotATrouver);
+                    Exercice.Controls.Add(txtMotATrouver);
 
                     // Incrémentation du tag pour la prochaine TextBox
                     valTag++;
@@ -1997,11 +2010,18 @@ namespace Mise_En_Commun
             connec.ConnectionString = chcon;
             connec.Open();
             Exercice.Controls.Clear();
-            if (exoNum != 0)
+            Exercice.Controls.Add(Finalisation);
+            if (exoNum > 0)
             {
                 dico.Add(exoNum, listDico);
-                listDico.Clear();
+                foreach (KeyValuePair<int,List<string>> kvp in dico)
+                {
+                    MessageBox.Show(kvp.Key.ToString());
+                    MessageBox.Show(kvp.Value.Count().ToString());
+                }
                 RemplirTableLocal();
+                listDico.Clear();
+
                 string UpdateSauvegarde = @"update Utilisateurs
                                 Set [codeExo] = " + exoNum + 1 +
                                 "Where [codeUtil] = " + user.NemUser() ;
@@ -2013,7 +2033,15 @@ namespace Mise_En_Commun
             OleDbDataAdapter da = new OleDbDataAdapter();
             da.SelectCommand = cd;
             DataTable dt = new DataTable();
-            da.Fill(dt);     
+            da.Fill(dt);
+            if (dt.Rows[0][3].ToString().Substring(0, 3) == "Pré" || dt.Rows[0][3].ToString().Substring(0, 3) == "Con")
+            {
+                connec.Close();
+                connec.ConnectionString = "";
+                grbEsp.Controls.Clear();
+                grbFr.Controls.Clear();
+                Exo_Conjugaison();
+            }
             if (dt.Rows[0][6].ToString() == "False" && int.Parse(dt.Rows[0][5].ToString()) != 0)
             {
                 connec.Close();
@@ -2022,15 +2050,7 @@ namespace Mise_En_Commun
                 lblEnonce.Text = "";
                 lblPhraseATraduire.Text = "";
                 lblTraductionEspagnol.Text = "";
-                  Exo_Mot_à_trou();
-            }
-            else if (int.Parse(dt.Rows[0][5].ToString()) == 0)
-            {
-                connec.Close();
-                connec.ConnectionString = "";
-                groupBoxVoc.Controls.Clear();
-                  Exerices_Vocabulaire();
-
+                Exo_Mot_à_trou();
             }
             else if (int.Parse(dt.Rows[0][5].ToString()) != 0 && dt.Rows[0][6].ToString() == "True")
             {
@@ -2040,18 +2060,26 @@ namespace Mise_En_Commun
                 lblEnonce.Text = "";
                 lblPhraseATraduire.Text = "";
                 lblTraductionEspagnol.Text = "";
+                MessageBox.Show("Crash nope1");
                 Exo_Glissage_Mot();
-                //Exercice.Controls.Add(Finalisation);
+                MessageBox.Show("Crash nope");
+                Exercice.Controls.Add(Finalisation);
 
             }
-            else
+            else if (exoNum > int.Parse(dt.Rows[0][0].ToString()))
+            {
+                PDF();
+            }
+            else 
             {
                 connec.Close();
                 connec.ConnectionString = "";
-                grbEsp.Controls.Clear();
-                grbFr.Controls.Clear();
-                Exo_Conjugaison();
+                groupBoxVoc.Controls.Clear();
+                Exerices_Vocabulaire();
+                //Exercice.Controls.Add(Finalisation);
             }
+
+
         }
         private void Recommencer_Exo(object sender, EventArgs e)
         {
@@ -2069,12 +2097,13 @@ namespace Mise_En_Commun
             foreach (KeyValuePair<int, List<string>> kvp in dico)
             {
                 
-                if (kvp.Value != null)
+                if (kvp.Value.Count != 0)
                 {
                     for (int i = 0; i < kvp.Value.Count; i++)
                     {
+                        MessageBox.Show(kvp.Key.ToString()+"Faux");
                         row = TableLocal.NewRow();
-                        row["numExo"] = kvp.Key;
+                        row["numExoPDF"] = kvp.Key;
                         row["Erreur/Correction"] = kvp.Value[i];
                         TableLocal.Rows.Add(row);
                     }
@@ -2082,8 +2111,9 @@ namespace Mise_En_Commun
                 }
                 else
                 {
+                    MessageBox.Show(kvp.Key.ToString()+"vrai");
                     row = TableLocal.NewRow();
-                    row["numExo"] = kvp.Key;
+                    row["numExoPDF"] = kvp.Key;
                     row["Erreur/Correction"] = null;
                     TableLocal.Rows.Add(row);
                 }
