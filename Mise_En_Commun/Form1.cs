@@ -23,9 +23,9 @@ namespace Mise_En_Commun
             InitializeComponent();
         }
         OleDbConnection connec = new OleDbConnection();
-        //string chcon = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=U:\A21\frm_EspagnolTrad-1.git\baseLangue.mdb";
+        string chcon = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=U:\A21\frm_EspagnolTrad-1.git\baseLangue.mdb";
         //Chaine Karim
-        string chcon = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = " + @"C:\Users\ordin\OneDrive\Bureau\Cours BUT\S2\D21\SAE\baseLangue.mdb";
+        //string chcon = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = " + @"C:\Users\ordin\OneDrive\Bureau\Cours BUT\S2\D21\SAE\baseLangue.mdb";
         int exoNum = 0;
         string coursNum = "";
         int leconNum = 0;
@@ -67,6 +67,30 @@ namespace Mise_En_Commun
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            connec.ConnectionString = chcon;
+            connec.Open();
+            exoNum = 0;
+            coursNum = "PAYSCULT";
+            leconNum = 2;
+            DataColumn column;
+
+            // Create new DataColumn, set DataType,
+            // ColumnName and add to DataTable.
+
+            //Colonne NumExoPDF
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.Int32");
+            column.ColumnName = "NumExoPDF";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
+            //Colonne Erreur
+            column = new DataColumn();
+            column.DataType = System.Type.GetType("System.String");
+            column.ColumnName = "Erreur/Correction";
+            column.ReadOnly = true;
+            column.Unique = false;
+            TableLocal.Columns.Add(column);
             Finalisation.Click += new System.EventHandler(Exo_Suivant);
             Finalisation.Location = new System.Drawing.Point(1220, 678);
             Finalisation.Size = new System.Drawing.Size(120, 54);
@@ -91,12 +115,11 @@ namespace Mise_En_Commun
             Exercice.Controls.Add(grbEsp);
             Exercice.Controls.Add(grbFr);
 
-            connec.ConnectionString = chcon;
-            connec.Open();
-            int NuméroExo = 2;
-            int NuméroLeçon = 1;
-            string filtre = " WHERE [ConcerneMots.numExo] = " + NuméroExo + " AND " +
-               "[ConcerneMots.numLecon] = " + NuméroLeçon + "AND" +
+//            connec.ConnectionString = chcon;
+    //        connec.Open();
+ 
+            string filtre = " WHERE [ConcerneMots.numExo] = " + exoNum + " AND " +
+               "[ConcerneMots.numLecon] = " + leconNum + "AND" +
                "[Exercices.codeVerbe] IS NOT NULL AND [Exercices.codetemps] > 0";
             string requêteESP = @"SELECT Mots.libMot
             FROM ((ConcerneMots INNER JOIN
@@ -246,7 +269,7 @@ namespace Mise_En_Commun
             Exercice.Text = "Conjugaison";
             this.Controls.Add(Exercice);
 
-            connec.Close();
+            //connec.Close();
 
 
         }
@@ -263,14 +286,12 @@ namespace Mise_En_Commun
             groupBoxVoc.Text = "Vocabulaire";
             Exercice.Controls.Add(groupBoxVoc);
 
-            connec.ConnectionString = chcon;
-            connec.Open();
-            int NuméroExo = 1;
-            int NuméroLeçon = 2;
-            string NuméroCours = "PAYSCULT";
-            string filtre = " WHERE [ConcerneMots.numExo] = " + NuméroExo + " AND " +
-                "[ConcerneMots.numLecon] = " + NuméroLeçon + "AND" +
-                "[ConcerneMots.numCours] = '" + NuméroCours + "'";
+           // connec.ConnectionString = chcon;
+          //  connec.Open();
+
+            string filtre = " WHERE [ConcerneMots.numExo] = " + exoNum + " AND " +
+                "[ConcerneMots.numLecon] = " + leconNum + "AND" +
+                "[ConcerneMots.numCours] = '" + coursNum + "'";
             string RequeteNombreDeTrucACréer = @" SELECT count(*)  " +
                 " FROM Mots INNER JOIN ConcerneMots ON Mots.numMot = ConcerneMots.numMot";
             OleDbCommand cd = new OleDbCommand();
@@ -321,7 +342,11 @@ namespace Mise_En_Commun
                 }
                 tabExo4.Clear();
             }
-            connec.Close();
+            dt.Clear();
+            tabExo4.Clear();
+
+            //
+            //connec.Close();
         }
         private void PDF()
         {
@@ -349,42 +374,51 @@ namespace Mise_En_Commun
             int v = 0;
             int nbimageE = 1;
             int nbimageJ = 1;
-            foreach (KeyValuePair<int, List<string>> kvp in lsf)
+            for ( int i = 0;i<TableLocal.Rows.Count;i++)
             {
-                if (kvp.Value != null)
+                for (int j = 0; j < TableLocal.Columns.Count; j++)
                 {
-                    ErreurPDF epdf = new ErreurPDF();
-                    epdf.Location = new System.Drawing.Point(15, 15 + r);
-                    epdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-                    epdf.Num = kvp.Key;
-                    epdf.ls = kvp.Value;
-                    epdf.image = "e" + nbimageE.ToString() + ".jpg";
-                    panelFautes.Controls.Add(epdf);
-                    for (int s = 0; s < kvp.Value.Count(); s++)
+                    if (TableLocal.Rows[i][1] != null)
                     {
-                        if (s > 2)
-                            r = r + 100;
+                        if (TableLocal.Rows[i][0] == TableLocal.Rows[i + 1][0] || TableLocal.Rows[i][0] == TableLocal.Rows[i - 1][0])
+                        {
+                            ls.Add(TableLocal.Rows[i][1].ToString());
+                        }
+                        ErreurPDF epdf = new ErreurPDF();
+                        epdf.Location = new System.Drawing.Point(15, 15 + r);
+                        epdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+                        epdf.Num = int.Parse(TableLocal.Rows[i][0].ToString());
+                        epdf.ls = ls;
+                        
+                        epdf.image = "e" + nbimageE.ToString() + ".jpg";
+                        panelFautes.Controls.Add(epdf);
+                        ls.Clear();
+                        for (int s = 0; s < ls.Count; s++)
+                        {
+                            if (s > 2)
+                                r = r + 100;
+                        }
+                        r = r + 125;
+                        nbimageE = nbimageE + 1;
+                        if (nbimageE > 4)
+                        {
+                            nbimageE = 1;
+                        }
                     }
-                    r = r + 125;
-                    nbimageE = nbimageE + 1;
-                    if (nbimageE > 4)
+                    if (TableLocal.Rows[i][1] == null)
                     {
-                        nbimageE = 1;
-                    }
-                }
-                if (kvp.Value == null)
-                {
-                    JustePDF jpdf = new JustePDF();
-                    jpdf.Location = new System.Drawing.Point(15, 15);
-                    jpdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-                    jpdf.Num = kvp.Key;
-                    jpdf.image = "j" + nbimageJ.ToString() + ".jpg";
-                    panelJuste.Controls.Add(jpdf);
-                    // v = v + 125;
-                    nbimageJ = nbimageJ + 1;
-                    if (nbimageJ > 4)
-                    {
-                        nbimageJ = 1;
+                        JustePDF jpdf = new JustePDF();
+                        jpdf.Location = new System.Drawing.Point(15, 15);
+                        jpdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+                        jpdf.Num = int.Parse(TableLocal.Rows[i][0].ToString());
+                        jpdf.image = "j" + nbimageJ.ToString() + ".jpg";
+                        panelJuste.Controls.Add(jpdf);
+                        // v = v + 125;
+                        nbimageJ = nbimageJ + 1;
+                        if (nbimageJ > 4)
+                        {
+                            nbimageJ = 1;
+                        }
                     }
                 }
 
@@ -663,7 +697,7 @@ namespace Mise_En_Commun
         public void RamenerToutesLesTablesEnLocale()
         {
             // On ouvre la connexion (obligé sinon ne fonctionne pas)
-            connec.Open();
+          //  connec.Open();
 
             //Copié sur internet (sauf le "connec") ; dans la 3ème colonne ce tableau on a le nom des toutes les tables (voir sujet)
             DataTable schemaTable = connec.GetOleDbSchemaTable(
@@ -671,7 +705,7 @@ namespace Mise_En_Commun
             new object[] { null, null, null, "TABLE" });
 
             // Ferme la co
-            connec.Close();
+           // connec.Close();
 
 
             foreach (DataRow dr in schemaTable.Rows)
@@ -903,7 +937,7 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
 
-            connec.ConnectionString = chcon;
+         //   connec.ConnectionString = chcon;
 
             RamenerToutesLesTablesEnLocale();
             //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
@@ -1148,7 +1182,7 @@ namespace Mise_En_Commun
         public void RamenerToutesLesTablesEnLocale3()
         {
             // On ouvre la connexion (obligé sinon ne fonctionne pas)
-            connec.Open();
+          //  connec.Open();
 
             //Copié sur internet (sauf le "connec") ; dans la 3ème colonne ce tableau on a le nom des toutes les tables (voir sujet)
             DataTable schemaTable = connec.GetOleDbSchemaTable(
@@ -1156,7 +1190,7 @@ namespace Mise_En_Commun
             new object[] { null, null, null, "TABLE" });
 
             // Ferme la co
-            connec.Close();
+          //  connec.Close();
 
 
             foreach (DataRow dr in schemaTable.Rows)
@@ -1484,7 +1518,7 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
 
-            connec.ConnectionString = chcon;
+           // connec.ConnectionString = chcon;
 
             RamenerToutesLesTablesEnLocale3();
             //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
@@ -1963,53 +1997,45 @@ namespace Mise_En_Commun
 
         private void Exo_Suivant(object sender, EventArgs e)
         {
+           // connec.ConnectionString = chcon;
+            //connec.Open();
             Exercice.Controls.Clear();
+            if (exoNum != 0)
+            {
+                dico.Add(exoNum, listDico);
+                listDico.Clear();
+                RemplirTableLocal();
+                string UpdateSauvegarde = @"update Utilisateurs
+                                Set [codeExo] = " + exoNum + 1 +
+                                "Where [codeUtil] = " + user.NemUser() ;
+            }
             exoNum = exoNum + 1;
-            string requêteTypeExo = @"SELECT * FROM Exercices 
-            Where [numExo] = " + exoNum + "And [numLecon] = " + leconNum + "And [numCours] =" + coursNum;
-                
-            // MessageBox.Show(exoNum.ToString());
-            OleDbCommand cd1 = new OleDbCommand(requêteTypeExo, connec);
+            string requêteTypeExo = @"SELECT * FROM [Exercices] 
+            Where [numExo] = " + exoNum + " AND [numLecon] = " + leconNum + " AND [numCours] = '" + coursNum+"'";
+            OleDbCommand cd = new OleDbCommand(requêteTypeExo, connec);
             OleDbDataAdapter da = new OleDbDataAdapter();
-            da.SelectCommand = cd1;
+            da.SelectCommand = cd;
             DataTable dt = new DataTable();
             da.Fill(dt);
-
-            if (int.Parse(dt.Rows[0][8].ToString()) != 0 || dt.Rows[0][8] != null)
+            MessageBox.Show(dt.Rows.Count.ToString());
+            if (int.Parse(dt.Rows[0][8].ToString()) != 0 )
             {
                 Exo_Conjugaison();
-                dico.Add(exoNum, listDico);
-                listDico.Clear();
-                RemplirTableLocal();
-                exoNum++;
             }
-            else if (int.Parse(dt.Rows[0][)
+            else if (dt.Rows[0][6].ToString() == "False" && int.Parse(dt.Rows[0][5].ToString()) != 0)
             {
                 Exo_Mot_à_trou();
-                dico.Add(exoNum, listDico);
-                listDico.Clear();
-                RemplirTableLocal();
-                exoNum++;
             }
-            else if (TypeExo == Vocabulaire)
+            else if (int.Parse(dt.Rows[0][5].ToString()) == 0)
             {
+                groupBoxVoc.Controls.Clear();
                 Exerices_Vocabulaire();
-                dico.Add(exoNum, listDico);
-                listDico.Clear();
-                RemplirTableLocal();
-                exoNum++;
             }
-            else if (exoNum > 15)
-                PDF();
-            else
+            else if (int.Parse(dt.Rows[0][5].ToString()) != 0 && dt.Rows[0][6].ToString() == "True")
             {
                 Exo_Glissage_Mot();
-                dico.Add(exoNum, listDico);
-                listDico.Clear();
-                RemplirTableLocal();
-                exoNum++;
             }
-
+           // connec.Close();
         }
         private void Recommencer_Exo(object sender, EventArgs e)
         {
@@ -2023,110 +2049,27 @@ namespace Mise_En_Commun
 
         private void RemplirTableLocal()
         {
-            DataColumn column;
             DataRow row;
-
-            // Create new DataColumn, set DataType,
-            // ColumnName and add to DataTable.
-
-            //Colonne NumElementPDF
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Int32");
-            column.ColumnName = "NumElementPDF";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne CodUtil
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Int32");
-            column.ColumnName = "CodUtil";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne NumExo
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Int32");
-            column.ColumnName = "NumExoPDF";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne NumCours
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.String");
-            column.ColumnName = "numCoursPDF";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne NumLecon
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Int32");
-            column.ColumnName = "numLeconPDF";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne JusteouFaux
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.Boolean");
-            column.ColumnName = "JusteouFaux";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne Erreur
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.String");
-            column.ColumnName = "Erreur";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            //Colonne Correction 
-            column = new DataColumn();
-            column.DataType = System.Type.GetType("System.String");
-            column.ColumnName = "Correction";
-            column.ReadOnly = true;
-            column.Unique = false;
-            TableLocal.Columns.Add(column);
-
-            // Colonne Primaire attribution NumElementPDF
-            DataColumn[] PrimaryKeyColumns = new DataColumn[1];
-            PrimaryKeyColumns[0] = TableLocal.Columns["NumElementPDF"];
-            TableLocal.PrimaryKey = PrimaryKeyColumns;
             foreach (KeyValuePair<int, List<string>> kvp in dico)
             {
-                incrematationTableLocal++;
-                row = TableLocal.NewRow();
-                row["NumElementPDF"] = incrematationTableLocal;
-                row["CodUtil"] = user.NemUser();
-                row["NumExoPDF"] = kvp.Key;
-                row["numCoursPDF"] = user.getExosInfo()[0, 2];
-                row["numLeconPDF"] = user.getExosInfo()[0, 1];
+                
                 if (kvp.Value != null)
                 {
                     for (int i = 0; i < kvp.Value.Count; i++)
                     {
-                        row["JusteouFaux"] = false;
-                        if (i % 2 != 0)
-                        {
-                            row["Erreur"] = kvp.Value[i];
-                        }
-                        else
-                        {
-                            row["Correction"] = kvp.Value[i];
-                        }
+                        row = TableLocal.NewRow();
+                        row["numExo"] = kvp.Key;
+                        row["Erreur/Correction"] = kvp.Value[i];
+                        TableLocal.Rows.Add(row);
                     }
 
                 }
                 else
                 {
-                    row["JusteouFaux"] = true;
-                    row["Erreur"] = null;
-                    row["Correction"] = null;
+                    row = TableLocal.NewRow();
+                    row["numExo"] = kvp.Key;
+                    row["Erreur/Correction"] = null;
+                    TableLocal.Rows.Add(row);
                 }
 
             }
