@@ -58,7 +58,6 @@ namespace Mise_En_Commun
         int cptAide = 3;
         // Table Local PDF
         DataTable TableLocal = new DataTable("PDF");
-        int incrematationTableLocal = 0;
         Utilisateur user = new Utilisateur("Torregrossa");
         Dictionary<int, List<string>> dico = new Dictionary<int, List<string>>();
         List<string> listDico = new List<string>();
@@ -67,11 +66,11 @@ namespace Mise_En_Commun
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            connec.ConnectionString = chcon;
-            connec.Open();
+          //  connec.ConnectionString = chcon;
+           // connec.Open();
             exoNum = 0;
             coursNum = "PAYSCULT";
-            leconNum = 2;
+            leconNum = 1;
             DataColumn column;
 
             // Create new DataColumn, set DataType,
@@ -115,16 +114,13 @@ namespace Mise_En_Commun
             Exercice.Controls.Add(grbEsp);
             Exercice.Controls.Add(grbFr);
 
-//            connec.ConnectionString = chcon;
-    //        connec.Open();
- 
+            connec.ConnectionString = chcon;
+            connec.Open();
+
             string filtre = " WHERE [ConcerneMots.numExo] = " + exoNum + " AND " +
-               "[ConcerneMots.numLecon] = " + leconNum + "AND" +
-               "[Exercices.codeVerbe] IS NOT NULL AND [Exercices.codetemps] > 0";
+               "[ConcerneMots.numLecon] = " + leconNum + "AND [ConcerneMots.numCours] = '" + coursNum + "'";
             string requêteESP = @"SELECT Mots.libMot
-            FROM ((ConcerneMots INNER JOIN
-                         Exercices ON ConcerneMots.numExo = Exercices.numExo) INNER JOIN
-                         Mots ON ConcerneMots.numMot = Mots.numMot) " + filtre;
+            FROM ((ConcerneMots INNER JOIN  Mots ON ConcerneMots.numMot = Mots.numMot) " + filtre;
             OleDbCommand cd = new OleDbCommand();
             cd.Connection = connec;
             cd.CommandType = CommandType.Text;
@@ -268,8 +264,9 @@ namespace Mise_En_Commun
             Exercice.Controls.Add(Recommencer_Conjugaison);
             Exercice.Text = "Conjugaison";
             this.Controls.Add(Exercice);
-
-            //connec.Close();
+            dt2.Clear();
+            dt.Clear();
+            connec.Close();
 
 
         }
@@ -286,8 +283,8 @@ namespace Mise_En_Commun
             groupBoxVoc.Text = "Vocabulaire";
             Exercice.Controls.Add(groupBoxVoc);
 
-           // connec.ConnectionString = chcon;
-          //  connec.Open();
+            connec.ConnectionString = chcon;
+            connec.Open();
 
             string filtre = " WHERE [ConcerneMots.numExo] = " + exoNum + " AND " +
                 "[ConcerneMots.numLecon] = " + leconNum + "AND" +
@@ -346,7 +343,7 @@ namespace Mise_En_Commun
             tabExo4.Clear();
 
             //
-            //connec.Close();
+            connec.Close();
         }
         private void PDF()
         {
@@ -697,7 +694,7 @@ namespace Mise_En_Commun
         public void RamenerToutesLesTablesEnLocale()
         {
             // On ouvre la connexion (obligé sinon ne fonctionne pas)
-          //  connec.Open();
+            connec.Open();
 
             //Copié sur internet (sauf le "connec") ; dans la 3ème colonne ce tableau on a le nom des toutes les tables (voir sujet)
             DataTable schemaTable = connec.GetOleDbSchemaTable(
@@ -705,7 +702,7 @@ namespace Mise_En_Commun
             new object[] { null, null, null, "TABLE" });
 
             // Ferme la co
-           // connec.Close();
+            connec.Close();
 
 
             foreach (DataRow dr in schemaTable.Rows)
@@ -937,7 +934,7 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
 
-         //   connec.ConnectionString = chcon;
+            connec.ConnectionString = chcon;
 
             RamenerToutesLesTablesEnLocale();
             //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
@@ -947,9 +944,9 @@ namespace Mise_En_Commun
             // Rechercher l'énoncé
             // Pour ça, il faut d'abord savoir à quelle cours et quelle leçon je suis. Mais vu que jsp encore comment faire je le fais avec des trucs choisis moi
             // Je récup le nom cours (dans un string), le num (dans un int) de la leçon et le numéro de l'exo (dans un int)
-            string cours = "GRAMM1";   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
-            int numLecon = 2;
-            int numExo = 4;
+            string cours = coursNum;   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
+            int numLecon = leconNum;
+            int numExo = exoNum;
             // Une fois récup, je parcours toutes les ligne de la table Exercices
             for (int i = 0; i < dsLocal.Tables["Exercices"].Rows.Count; i++)
             {
@@ -1182,7 +1179,7 @@ namespace Mise_En_Commun
         public void RamenerToutesLesTablesEnLocale3()
         {
             // On ouvre la connexion (obligé sinon ne fonctionne pas)
-          //  connec.Open();
+            connec.Open();
 
             //Copié sur internet (sauf le "connec") ; dans la 3ème colonne ce tableau on a le nom des toutes les tables (voir sujet)
             DataTable schemaTable = connec.GetOleDbSchemaTable(
@@ -1190,7 +1187,7 @@ namespace Mise_En_Commun
             new object[] { null, null, null, "TABLE" });
 
             // Ferme la co
-          //  connec.Close();
+            connec.Close();
 
 
             foreach (DataRow dr in schemaTable.Rows)
@@ -1518,7 +1515,7 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
 
-           // connec.ConnectionString = chcon;
+            connec.ConnectionString = chcon;
 
             RamenerToutesLesTablesEnLocale3();
             //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
@@ -1528,9 +1525,9 @@ namespace Mise_En_Commun
             // Rechercher l'énoncé
             // Pour ça, il faut d'abord savoir à quelle cours et quelle leçon je suis. Mais vu que jsp encore comment faire je le fais avec des trucs choisis moi
             // Je récup le nom cours (dans un string), le num (dans un int) de la leçon et le numéro de l'exo (dans un int)
-            string cours = "DEBUT1";   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
-            int numLecon = 5;
-            int numExo = 8;
+            string cours = coursNum;   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
+            int numLecon = leconNum;
+            int numExo = exoNum;
 
             // Une fois récup, je parcours toutes les ligne de la table Exercices pour trouver la ligne (dans la B.D.) correspondant au cours, leçon et exercice actuel
             for (int i = 0; i < DsLocalexo3.Tables["Exercices"].Rows.Count; i++)
@@ -1997,8 +1994,8 @@ namespace Mise_En_Commun
 
         private void Exo_Suivant(object sender, EventArgs e)
         {
-           // connec.ConnectionString = chcon;
-            //connec.Open();
+            connec.ConnectionString = chcon;
+            connec.Open();
             Exercice.Controls.Clear();
             if (exoNum != 0)
             {
@@ -2016,26 +2013,45 @@ namespace Mise_En_Commun
             OleDbDataAdapter da = new OleDbDataAdapter();
             da.SelectCommand = cd;
             DataTable dt = new DataTable();
-            da.Fill(dt);
-            MessageBox.Show(dt.Rows.Count.ToString());
-            if (int.Parse(dt.Rows[0][8].ToString()) != 0 )
+            da.Fill(dt);     
+            if (dt.Rows[0][6].ToString() == "False" && int.Parse(dt.Rows[0][5].ToString()) != 0)
             {
-                Exo_Conjugaison();
-            }
-            else if (dt.Rows[0][6].ToString() == "False" && int.Parse(dt.Rows[0][5].ToString()) != 0)
-            {
-                Exo_Mot_à_trou();
+                connec.Close();
+                connec.ConnectionString = "";
+                dsLocal.Clear();
+                lblEnonce.Text = "";
+                lblPhraseATraduire.Text = "";
+                lblTraductionEspagnol.Text = "";
+                  Exo_Mot_à_trou();
             }
             else if (int.Parse(dt.Rows[0][5].ToString()) == 0)
             {
+                connec.Close();
+                connec.ConnectionString = "";
                 groupBoxVoc.Controls.Clear();
-                Exerices_Vocabulaire();
+                  Exerices_Vocabulaire();
+
             }
             else if (int.Parse(dt.Rows[0][5].ToString()) != 0 && dt.Rows[0][6].ToString() == "True")
             {
+                connec.Close();
+                connec.ConnectionString = "";
+                DsLocalexo3.Clear();
+                lblEnonce.Text = "";
+                lblPhraseATraduire.Text = "";
+                lblTraductionEspagnol.Text = "";
                 Exo_Glissage_Mot();
+                //Exercice.Controls.Add(Finalisation);
+
             }
-           // connec.Close();
+            else
+            {
+                connec.Close();
+                connec.ConnectionString = "";
+                grbEsp.Controls.Clear();
+                grbFr.Controls.Clear();
+                Exo_Conjugaison();
+            }
         }
         private void Recommencer_Exo(object sender, EventArgs e)
         {

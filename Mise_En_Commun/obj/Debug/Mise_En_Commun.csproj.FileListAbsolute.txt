@@ -31,4 +31,4 @@ U:\A21\MiseEnCommunExercice\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.CoreC
 U:\A21\MiseEnCommunExercice\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.CopyComplete
 U:\A21\MiseEnCommunExercice\Mise_En_Commun\obj\Debug\Mise_En_Commun.exe
 U:\A21\MiseEnCommunExercice\Mise_En_Commun\obj\Debug\Mise_En_Commun.pdb
-U:\A21\MiseEnCommunExercice\Mise_En_Commun\obj\Debug\Mise_En_Commun.csproj.AssemblyReference.cache
+U:\A21\MiseEnCommunExercice\Mise_En_Commun\obj\Debug\Mise_En_Commun.csprojAssemblyReference.cache
