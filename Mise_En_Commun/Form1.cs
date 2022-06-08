@@ -23,7 +23,9 @@ namespace Mise_En_Commun
             InitializeComponent();
         }
         OleDbConnection connec = new OleDbConnection();
-        string chcon = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=U:\A21\frm_EspagnolTrad-1.git\baseLangue.mdb";
+        //string chcon = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=U:\A21\frm_EspagnolTrad-1.git\baseLangue.mdb";
+        //Chaine Karim
+        string chcon = @"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = " + @"C:\Users\ordin\OneDrive\Bureau\Cours BUT\S2\D21\SAE\baseLangue.mdb";
         int exoNum = 0;
         string coursNum = "";
         int leconNum = 0;
@@ -76,7 +78,7 @@ namespace Mise_En_Commun
             this.Controls.Add(Finalisation);
 
         }
-       
+
         private void Exo_Conjugaison()
         {
             Exercice.Controls.Add(Finalisation);
@@ -194,7 +196,7 @@ namespace Mise_En_Commun
             Label GroupeVerbe = new Label();
             GroupeVerbe.Size = new System.Drawing.Size(300, 19);
             GroupeVerbe.Location = new System.Drawing.Point(43, 124);
-            GroupeVerbe.Text = "Le verbe " +motsFR+ " est du : " + gbVerbe;
+            GroupeVerbe.Text = "Le verbe " + motsFR + " est du : " + gbVerbe;
             grbFr.Controls.Add(GroupeVerbe);
             Label GroupeVerbeEsp = new Label();
             GroupeVerbeEsp.Size = new System.Drawing.Size(300, 19);
@@ -226,7 +228,7 @@ namespace Mise_En_Commun
 
             AideConjugaison.Location = new System.Drawing.Point(50, 678);
             AideConjugaison.Size = new System.Drawing.Size(51, 51);
-            AideConjugaison.Image =   Image.FromFile(@"../../Photo/Aide.png");
+            AideConjugaison.Image = Image.FromFile(@"../../Photo/Aide.png");
             AideConjugaison.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             AideConjugaison.Click += new System.EventHandler(Aide_Conjugaison);
             Valider.Click += new System.EventHandler(Valider_Click);
@@ -245,14 +247,14 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
             connec.Close();
-        
+
 
         }
         private void Exerices_Vocabulaire()
         {
             this.Controls.Add(Exercice);
             Exercice.Controls.Add(Finalisation);
-            
+
             Finalisation.Text = "Finalisation de l\'exercice";
             groupBoxVoc.BackColor = System.Drawing.Color.Transparent;
             groupBoxVoc.Font = new System.Drawing.Font("Noto Sans Lao", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -292,7 +294,7 @@ namespace Mise_En_Commun
                 for (int j = 0; j < dt.Columns.Count; j++)
                 {
                     tabExo4.Add(dt.Rows[i][j].ToString());
-                   // MessageBox.Show(dt.Rows[i][j].ToString());
+                    // MessageBox.Show(dt.Rows[i][j].ToString());
                 }
                 tabExo4.Add("Séparateur");
                 UserControlExo4 us = new UserControlExo4();
@@ -373,12 +375,12 @@ namespace Mise_En_Commun
                 if (kvp.Value == null)
                 {
                     JustePDF jpdf = new JustePDF();
-                    jpdf.Location = new System.Drawing.Point(15, 15 );
+                    jpdf.Location = new System.Drawing.Point(15, 15);
                     jpdf.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
                     jpdf.Num = kvp.Key;
                     jpdf.image = "j" + nbimageJ.ToString() + ".jpg";
                     panelJuste.Controls.Add(jpdf);
-                   // v = v + 125;
+                    // v = v + 125;
                     nbimageJ = nbimageJ + 1;
                     if (nbimageJ > 4)
                     {
@@ -413,32 +415,32 @@ namespace Mise_En_Commun
             PdfContentByte pbtext = pdf.DirectContent;
             Dictionary<int, List<string>> lsf = dico;
             var blueListTextFont = FontFactory.GetFont("Arial", 18, 1, new BaseColor(Color.Blue));
-            var redListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Red));
+            var redListTextFontBold = FontFactory.GetFont("Arial", 14, 1, new BaseColor(Color.Red));
             var redListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Red));
-            var greenListTextFontBold = FontFactory.GetFont("Arial", 14,1, new BaseColor(Color.Green));
+            var greenListTextFontBold = FontFactory.GetFont("Arial", 14, 1, new BaseColor(Color.Green));
             var greenListTextFont = FontFactory.GetFont("Arial", 12, new BaseColor(Color.Green));
 
             BaseFont bf = BaseFont.CreateFont(@"C:\Windows\Fonts\arial.TTF", BaseFont.WINANSI, true);
-            document.Add(new Paragraph("Résumé de vos exercices",blueListTextFont));
+            document.Add(new Paragraph("Résumé de vos exercices", blueListTextFont));
             document.Add(new Paragraph("\n"));
             document.Add(new Paragraph("\n"));
-            document.Add(new Paragraph("Voici la liste de vos erreurs ainsi que leur correction : ",redListTextFontBold));
+            document.Add(new Paragraph("Voici la liste de vos erreurs ainsi que leur correction : ", redListTextFontBold));
             document.Add(new Paragraph("\n"));
 
             foreach (KeyValuePair<int, List<string>> kvp in lsf)
             {
                 if (kvp.Value != null)
                 {
-                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString(),redListTextFont));
+                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString(), redListTextFont));
                     for (int i = 0; i < kvp.Value.Count; i++)
                     {
-                        document.Add(new Paragraph(kvp.Value[i],redListTextFont));
+                        document.Add(new Paragraph(kvp.Value[i], redListTextFont));
                     }
                     document.Add(new Paragraph("\n"));
 
                 }
             }
-            document.Add(new Paragraph("Voici la liste des exercices que vous avez réussi sans commettre de fautes : ",greenListTextFontBold));
+            document.Add(new Paragraph("Voici la liste des exercices que vous avez réussi sans commettre de fautes : ", greenListTextFontBold));
             document.Add(new Paragraph("\n"));
 
 
@@ -447,8 +449,8 @@ namespace Mise_En_Commun
                 if (kvp.Value == null)
                 {
 
-                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString(),greenListTextFont));
-                    document.Add(new Paragraph("Exercice réussi bravo ",greenListTextFont));
+                    document.Add(new Paragraph("Exercice " + kvp.Key.ToString(), greenListTextFont));
+                    document.Add(new Paragraph("Exercice réussi bravo ", greenListTextFont));
                     document.Add(new Paragraph("\n"));
 
                 }
@@ -458,8 +460,8 @@ namespace Mise_En_Commun
 
             document.Close();
         }
-    
-    private void Valider_Click(object sender, EventArgs e)
+
+        private void Valider_Click(object sender, EventArgs e)
         {
             bool gagné = false;
             int just = 0;
@@ -509,87 +511,12 @@ namespace Mise_En_Commun
                     c.Text = c.Tag.ToString();
                     sort = false;
                 }
-               
+
             }
             Exercice.Controls.Remove(AideConjugaison);
         }
 
         // ExoKArim 
-        
-        private void btnCommencerExo_Click(object sender, EventArgs e)
-        {
-
-            connec.ConnectionString = chcon;
-
-            RamenerToutesLesTablesEnLocale();
-            //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
-            int nbTableDansDataSet = dsLocal.Tables.Count;
-          //  MessageBox.Show("Nb de tables dans le DataSet : " + nbTableDansDataSet.ToString());
-
-            // Rechercher l'énoncé
-            // Pour ça, il faut d'abord savoir à quelle cours et quelle leçon je suis. Mais vu que jsp encore comment faire je le fais avec des trucs choisis moi
-            // Je récup le nom cours (dans un string), le num (dans un int) de la leçon et le numéro de l'exo (dans un int)
-            string cours = "GRAMM1";   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
-            int numLecon = 2;
-            int numExo = 4;
-            // Une fois récup, je parcours toutes les ligne de la table Exercices
-            for (int i = 0; i < dsLocal.Tables["Exercices"].Rows.Count; i++)
-            {
-                // "Si le cours récup est le même que dans la ligne ET le num de la leçon récup est le même que la ligne ET le num de l'exercice est le même que dans la ligne ALORS"
-                if (cours == dsLocal.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numExo"].ToString())
-                {
-                    foreach (Label lbl in Exercice.Controls.OfType<Label>())
-                    {
-                        // Nous voulons changer seulement le label de l'énoncé
-                        if (lbl.Name == "lblEnonce")
-                        {
-                            string enonce = dsLocal.Tables["Exercices"].Rows[i]["enonceExo"].ToString();
-                            lbl.Text = "Énoncé : " + enonce;
-                           // MessageBox.Show(enonce);
-                        }
-                    }
-                }
-            }
-
-
-            // Rechercher une phrase à traduire
-            // On récup le num du cours, leçon etc... (déjà fais en haut)
-            //Ensuite je parcours la table Exercices et je récup le codePhrase
-            int codePhrase = 0; // Tjrs initialiser à 0
-            for (int i = 0; i < dsLocal.Tables["Exercices"].Rows.Count; i++)
-            {
-                // "Si le cours récup est le même que dans la ligne ET le num de la leçon récup est le même que la ligne ET le num de l'exercice est le même que dans la ligne ALORS"
-                if (cours == dsLocal.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numExo"].ToString())
-                {
-                    codePhrase = (int)dsLocal.Tables["Exercices"].Rows[i]["codePhrase"];
-                }
-            }
-
-            string phraseEnFrancais = "";
-            string traductionPhraseEnEspagnol = "";
-
-            //Parcourt de toutes les lignes de la table "Phrases"
-            for (int i = 0; i < dsLocal.Tables["Phrases"].Rows.Count; i++)
-            {
-                if ((int)dsLocal.Tables["Phrases"].Rows[i]["codePhrase"] == codePhrase)
-                {
-                    phraseEnFrancais = dsLocal.Tables["Phrases"].Rows[i]["traducPhrase"].ToString();
-                    traductionPhraseEnEspagnol = dsLocal.Tables["Phrases"].Rows[i]["textePhrase"].ToString();
-                }
-            }
-
-            //  Affichage de la phrase à traduire
-            foreach (Label lbl in Exercice.Controls.OfType<Label>())
-            {
-                if (lbl.Name == "lblPhraseATraduire")
-                {
-                    lbl.Text = "Veuillez traduire la phrase suivante : " + phraseEnFrancais;
-                }
-            }
-
-            //Affichage de la phrase en espagnol
-            AffichePhraseEspagnolACompleter(traductionPhraseEnEspagnol);       // CHANGER LE NOM DE LA PROCEDURE
-        }
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -601,7 +528,7 @@ namespace Mise_En_Commun
         List<string> nouveauTableau = new List<string>();
         List<string> listeMotsEspagnolCaches = new List<string>();
 
-        public void AffichePhraseEspagnolACompleter(string XtraductionPhraseEnEspagnol)
+        public void AffichePhraseEspagnolACompleter(string XtraductionPhraseEnEspagnol, List<int> Xliste_pos_mots_a_cacher)
         {
 
             // Tableau de string contenant tous les mots de la phrase en espagnol (utiliser la méthode split)
@@ -645,28 +572,6 @@ namespace Mise_En_Commun
 
             }
 
-            int nbMotsDansPhraseEspagnol = nouveauTableau.Count;
-            // Déclaration + initialisation d'une variable aléatoire qui servira à cacher une des valeur dans la phrase
-            Random aleatoire = new Random();
-            int posAleatoire = aleatoire.Next(0, nbMotsDansPhraseEspagnol);
-
-            // Il ne faudrait pas que le mot caché soit une virgule ou un point etc... --> donc on tire un numéro aléatoirement jusqu'à qu'on obtient un mot
-            while (nouveauTableau[posAleatoire] == "," || nouveauTableau[posAleatoire] == "." || nouveauTableau[posAleatoire] == ":")
-            {
-                posAleatoire = aleatoire.Next(0, nbMotsDansPhraseEspagnol);
-            }
-
-            // Une fois que nous avons fixé la 1ère position aléatoire, on fixe la 2ème
-            int posAleatoire2 = aleatoire.Next(0, nbMotsDansPhraseEspagnol);
-            while (posAleatoire2 == posAleatoire || nouveauTableau[posAleatoire2] == "," || nouveauTableau[posAleatoire2] == "." || nouveauTableau[posAleatoire2] == ":")
-            {
-                posAleatoire2 = aleatoire.Next(0, nbMotsDansPhraseEspagnol);
-            }
-
-            MessageBox.Show("La 1ère position aléatoire est : " + posAleatoire.ToString());     // Test
-            MessageBox.Show("La 2ème position aléatoire est : " + posAleatoire2.ToString());     // Test
-
-
             //Position de ma TextBox si elle est en 1ère position
             int leftTxt = 406;
             int topTxt = 531;
@@ -681,148 +586,73 @@ namespace Mise_En_Commun
             for (int i = 0; i < nouveauTableau.Count; i++)
             {
                 string motActuel = nouveauTableau[i];
-                // "Si la position actuelle du tableau que l'on parcourt  est différent de la position aléatoire"
-                if (i != posAleatoire && i != posAleatoire2)
+
+                // Lorsque cette condition est valide, la position à cacher n'est pas atteinte car la liste ne contient pas cette position
+                if (!Xliste_pos_mots_a_cacher.Contains(i))
                 {
-                    for (int j = 0; j < nouveauTableau.Count; j++)      // J'AI CHANGE ICI LA LENGTH
+                    // Génération d'un label
+                    Label lblPhraseTraductionEspagnol = new Label();
+                    lblPhraseTraductionEspagnol.Left = leftLabel;
+                    lblPhraseTraductionEspagnol.Top = topLabel;
+                    lblPhraseTraductionEspagnol.Text = motActuel;
+                    lblPhraseTraductionEspagnol.AutoSize = true;
+
+                    // Ajout à la collection des Controls du form
+                    this.Controls.Add(lblPhraseTraductionEspagnol);
+
+
+                    // Nous n'allons pas incrémenter la même chose suivant la nature du prochain composant (Label ou TextBox)
+                    int posProchainComposant = i + 1;
+                    if (Xliste_pos_mots_a_cacher.Contains(posProchainComposant))  // Si le prochain composant est une TextBox
                     {
-                        if (i == j)
-                        {
-
-                            // Génération d'un label dynamiquement
-
-                            Label lblPhraseTraductionEspagnol = new Label();
-
-                            lblPhraseTraductionEspagnol.Left = leftLabel;
-                            lblPhraseTraductionEspagnol.Top = topLabel;
-                            lblPhraseTraductionEspagnol.Text = motActuel;
-                            lblPhraseTraductionEspagnol.AutoSize = true;
-
-                            // Ajout à la collection des Controls du form
-                            Exercice.Controls.Add(lblPhraseTraductionEspagnol);
-
-
-                            // Nous n'allons pas incrémenter la même chose suivant la nature du prochain composant (Label ou TextBox)
-                            int posProchainComposant = i + 1;
-                            if (posProchainComposant == posAleatoire || posProchainComposant == posAleatoire2)  // Si le prochain composant est une TextBox
-                            {
-                                // On incrémente la position de la TextBox
-                                int longueurLabel = lblPhraseTraductionEspagnol.Width;
-                                leftTxt = leftLabel + longueurLabel + 10;
-                            }
-                            else
-                            {
-                                int longueurLabel = lblPhraseTraductionEspagnol.Width;
-                                leftLabel = leftLabel + longueurLabel + 10;
-                            }
-
-                        }
-
+                        // On incrémente la position de la TextBox
+                        int longueurLabel = lblPhraseTraductionEspagnol.Width;
+                        leftTxt = leftLabel + longueurLabel + 10;
+                    }
+                    else
+                    {
+                        int longueurLabel = lblPhraseTraductionEspagnol.Width;
+                        leftLabel = leftLabel + longueurLabel + 10;
                     }
 
-
-
-
-
-
-
                 }
-                // On a atteint la position aléatoire --> au lieu d'écrire le mot, on va mettre une TextBox à la place
-                else if (i == posAleatoire)
+                else
                 {
                     string motCache = nouveauTableau[i];
                     listeMotsEspagnolCaches.Add(motCache);
 
-                    for (int j = 0; j < nouveauTableau.Count; j++)
+                    // Génération d'une TextBox dynamiquement :
+                    TextBox txtMotATrouver = new TextBox();
+                    // Paramétrage de la TextBox
+                    txtMotATrouver.Top = topTxt;
+                    txtMotATrouver.Left = leftTxt;
+                    txtMotATrouver.Size = new System.Drawing.Size(100, 35);
+                    txtMotATrouver.Tag = valTag;       // Pour pouvoir différencier les TextBox puisqu'elles ne vont pas avoir le même traitement
+
+                    // Génération d'un évènement KeyPress dynamiquement afin de pouvoir interdir certains caractères
+                    txtMotATrouver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(txtMotATrouver_KeyPress);
+
+                    // Ajout à la collection des Controls du formulaire (pour l'afficher)
+                    this.Controls.Add(txtMotATrouver);
+
+                    // Incrémentation du tag pour la prochaine TextBox
+                    valTag++;
+
+                    // Nous n'allons pas incrémenter la même chose suivant la nature du prochain composant (Label ou TextBox)
+                    int posProchainComposant = i + 1;
+                    if (Xliste_pos_mots_a_cacher.Contains(posProchainComposant))  // Si le prochain composant est une TextBox
                     {
-                        if (i == j)
-                        {
-                            // Génération d'une TextBox dynamiquement :
-                            TextBox txtMotATrouver = new TextBox();
-                            // Paramétrage de la TextBox
-                            txtMotATrouver.Top = topTxt;
-                            txtMotATrouver.Left = leftTxt;
-                            txtMotATrouver.Size = new System.Drawing.Size(100, 35);
-                            txtMotATrouver.Tag = valTag;       // Pour pouvoir différencier les TextBox puisqu'elles ne vont pas avoir le même traitement
-
-                            // Génération d'un évènement KeyPress dynamiquement afin de pouvoir interdir certains caractères
-                            txtMotATrouver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(txtMotATrouver_KeyPress);
-
-                            // Ajout à la collection des Controls du formulaire (pour l'afficher)
-                            Exercice.Controls.Add(txtMotATrouver);
-
-                            // Incrémentation du tag pour la prochaine TextBox
-                            valTag++;
-
-                            // Nous n'allons pas incrémenter la même chose suivant la nature du prochain composant (Label ou TextBox)
-                            int posProchainComposant = i + 1;
-                            if (posProchainComposant == posAleatoire || posProchainComposant == posAleatoire2)  // Si le prochain composant est une TextBox
-                            {
-                                // On incrémente la position de la TextBox
-                                int longueurTextBox = txtMotATrouver.Width; // à déclarer en haut pck je l'initialise 2 fois
-                                leftTxt = leftTxt + longueurTextBox + 10;      // Besoin de stocker la longueur (pas la largeur) du label
-                            }
-                            else
-                            {
-                                int longueurTextBox = txtMotATrouver.Width;
-                                leftLabel = leftTxt + longueurTextBox + 10;
-                            }
-
-                        }
-
+                        // On incrémente la position de la TextBox
+                        int longueurTextBox = txtMotATrouver.Width; // à déclarer en haut pck je l'initialise 2 fois
+                        leftTxt = leftTxt + longueurTextBox + 10;      // Besoin de stocker la longueur (pas la largeur) du label
+                    }
+                    else
+                    {
+                        int longueurTextBox = txtMotATrouver.Width;
+                        leftLabel = leftTxt + longueurTextBox + 10;
                     }
 
-
-
                 }
-                else if (i == posAleatoire2)
-                {
-                    string motCache = nouveauTableau[i];
-                    listeMotsEspagnolCaches.Add(motCache);
-
-                    for (int j = 0; j < nouveauTableau.Count; j++)
-                    {
-                        if (i == j)
-                        {
-                            // Génération d'une TextBox dynamiquement :
-                            TextBox txtMotATrouver = new TextBox();
-                            // Paramétrage de la TextBox
-                            txtMotATrouver.Top = topTxt;
-                            txtMotATrouver.Left = leftTxt;
-                            txtMotATrouver.Size = new System.Drawing.Size(100, 35);
-                            txtMotATrouver.Tag = valTag;       // Pour pouvoir différencier les TextBox puisqu'elles ne vont pas avoir le même traitement
-
-                            // Génération d'un évènement KeyPress dynamiquement afin de pouvoir interdir certains caractères
-                            txtMotATrouver.KeyPress += new System.Windows.Forms.KeyPressEventHandler(txtMotATrouver_KeyPress);
-
-                            // Ajout à la collection des Controls du formulaire (pour l'afficher)
-                            Exercice.Controls.Add(txtMotATrouver);
-
-                            // Incrémentation du tag pour la prochaine TextBox
-                            valTag++;
-
-                            // Nous n'allons pas incrémenter la même chose suivant la nature du prochain composant (Label ou TextBox)
-                            int posProchainComposant = i + 1;
-                            if (posProchainComposant == posAleatoire || posProchainComposant == posAleatoire2)  // Si le prochain composant est une TextBox
-                            {
-                                // On incrémente la position de la TextBox
-                                int longueurTextBox = txtMotATrouver.Width; // à déclarer en haut pck je l'initialise 2 fois
-                                leftTxt = leftTxt + longueurTextBox + 10;
-                            }
-                            else
-                            {
-                                int longueurTextBox = txtMotATrouver.Width;
-                                leftLabel = leftTxt + longueurTextBox + 10;
-                            }
-
-                        }
-
-                    }
-
-
-
-                }
-
 
             }
 
@@ -968,8 +798,7 @@ namespace Mise_En_Commun
 
                     if (t.Tag.ToString() == i.ToString())
                     {
-                        // Sous forme de MessageBox comme ça l'utilisateur pourra analyser son/ses erreur(s)
-                        MessageBox.Show("Réponse de la case n°" + (i + 1).ToString() + " : " + reponse);        // Fonctionne 100% avec plusieurs cases j'ai très bien vérifié te casse pas la tête dessus si y a un problème
+                        t.Text = reponse;
                     }
                 }
             }
@@ -1020,19 +849,7 @@ namespace Mise_En_Commun
 
         private void Exo_Mot_à_trou()
         {
-           //Génération dynamique du bouton commencer exo/
-            btnCommencerExo.Name = "btnCommencerExo";
-            btnCommencerExo.Left = 948;
-            btnCommencerExo.Top = 40;
-            btnCommencerExo.Text = "Commencer exo";
-            btnCommencerExo.Width = 335;
-            btnCommencerExo.Height = 149;
-            // Génération de l'évènement
-            btnCommencerExo.Click += new System.EventHandler(btnCommencerExo_Click);
-            // Ajout au form
-            Exercice.Controls.Add(btnCommencerExo);
-
-           //Génération dynamique du bouton valider/
+            //Génération dynamique du bouton valider/
             btnValider.Name = "btnValider";
             btnValider.Left = 987;
             btnValider.Top = 640;
@@ -1044,7 +861,7 @@ namespace Mise_En_Commun
             // Ajout au form
             Exercice.Controls.Add(btnValider);
 
-           //Génération dynamique du bouton Solution/ //796; 640 156; 68
+            //Génération dynamique du bouton Solution/ //796; 640 156; 68
             btnSolution.Name = "btnSolution";
             btnSolution.Left = 796;
             btnSolution.Top = 640;
@@ -1065,7 +882,7 @@ namespace Mise_En_Commun
             // Ajout au form
             Exercice.Controls.Add(lblEnonce);
 
-           // Génération dynamique du label contenant la phrase qu'il faudra traduire/
+            // Génération dynamique du label contenant la phrase qu'il faudra traduire/
             lblPhraseATraduire.Name = "lblPhraseATraduire";
             lblPhraseATraduire.Left = 193;
             lblPhraseATraduire.Top = 422;
@@ -1074,9 +891,9 @@ namespace Mise_En_Commun
             // Ajout au form
             Exercice.Controls.Add(lblPhraseATraduire);
 
-           // Génération dynamique du label contenant la phrase qu'il faudra traduire/
+            // Génération dynamique du label contenant la phrase qu'il faudra traduire/
             lblTraductionEspagnol.Name = "lblTraductionEspagnol";
-            lblTraductionEspagnol.Location = new System.Drawing.Point(12,50);
+            lblTraductionEspagnol.Location = new System.Drawing.Point(12, 50);
             lblTraductionEspagnol.AutoSize = true;
             lblTraductionEspagnol.Text = "Traduction en espagnol : ";
             // Ajout au form
@@ -1086,50 +903,49 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
 
-
-        }
-        private void btnCommencerExo_Click3(object sender, EventArgs e)
-        {
             connec.ConnectionString = chcon;
 
-            RamenerToutesLesTablesEnLocale3();
+            RamenerToutesLesTablesEnLocale();
             //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
-            int nbTableDansDataSet = DsLocalexo3.Tables.Count;
-          //  MessageBox.Show("Nb de tables dans le DataSet : " + nbTableDansDataSet.ToString());
+            int nbTableDansDataSet = dsLocal.Tables.Count;
+            //  MessageBox.Show("Nb de tables dans le DataSet : " + nbTableDansDataSet.ToString());
 
             // Rechercher l'énoncé
             // Pour ça, il faut d'abord savoir à quelle cours et quelle leçon je suis. Mais vu que jsp encore comment faire je le fais avec des trucs choisis moi
             // Je récup le nom cours (dans un string), le num (dans un int) de la leçon et le numéro de l'exo (dans un int)
-            string cours = "DEBUT1";   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
-            int numLecon = 5;
-            int numExo = 8;
-
-            // Une fois récup, je parcours toutes les ligne de la table Exercices pour trouver la ligne (dans la B.D.) correspondant au cours, leçon et exercice actuel
-            for (int i = 0; i < DsLocalexo3.Tables["Exercices"].Rows.Count; i++)
+            string cours = "GRAMM1";   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
+            int numLecon = 2;
+            int numExo = 4;
+            // Une fois récup, je parcours toutes les ligne de la table Exercices
+            for (int i = 0; i < dsLocal.Tables["Exercices"].Rows.Count; i++)
             {
                 // "Si le cours récup est le même que dans la ligne ET le num de la leçon récup est le même que la ligne ET le num de l'exercice est le même que dans la ligne ALORS"
-                if (cours == DsLocalexo3.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numExo"].ToString())
+                if (cours == dsLocal.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numExo"].ToString())
                 {
                     foreach (Label lbl in Exercice.Controls.OfType<Label>())
                     {
+                        // Nous voulons changer seulement le label de l'énoncé
                         if (lbl.Name == "lblEnonce")
                         {
-                            lbl.Text = "Énoncé : " + DsLocalexo3.Tables["Exercices"].Rows[i]["enonceExo"].ToString() + ".";
+                            string enonce = dsLocal.Tables["Exercices"].Rows[i]["enonceExo"].ToString();
+                            lbl.Text = "Énoncé : " + enonce;
+                            // MessageBox.Show(enonce);
                         }
                     }
                 }
             }
 
+
             // Rechercher une phrase à traduire
             // On récup le num du cours, leçon etc... (déjà fais en haut)
             //Ensuite je parcours la table Exercices et je récup le codePhrase
             int codePhrase = 0; // Tjrs initialiser à 0
-            for (int i = 0; i < DsLocalexo3.Tables["Exercices"].Rows.Count; i++)
+            for (int i = 0; i < dsLocal.Tables["Exercices"].Rows.Count; i++)
             {
                 // "Si le cours récup est le même que dans la ligne ET le num de la leçon récup est le même que la ligne ET le num de l'exercice est le même que dans la ligne ALORS"
-                if (cours == DsLocalexo3.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numExo"].ToString())
+                if (cours == dsLocal.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numExo"].ToString())
                 {
-                    codePhrase = (int)DsLocalexo3.Tables["Exercices"].Rows[i]["codePhrase"];
+                    codePhrase = (int)dsLocal.Tables["Exercices"].Rows[i]["codePhrase"];
                 }
             }
 
@@ -1137,35 +953,52 @@ namespace Mise_En_Commun
             string traductionPhraseEnEspagnol = "";
 
             //Parcourt de toutes les lignes de la table "Phrases"
-            for (int i = 0; i < DsLocalexo3.Tables["Phrases"].Rows.Count; i++)
+            for (int i = 0; i < dsLocal.Tables["Phrases"].Rows.Count; i++)
             {
-                if ((int)DsLocalexo3.Tables["Phrases"].Rows[i]["codePhrase"] == codePhrase)
+                if ((int)dsLocal.Tables["Phrases"].Rows[i]["codePhrase"] == codePhrase)
                 {
-                    phraseEnFrancais = DsLocalexo3.Tables["Phrases"].Rows[i]["traducPhrase"].ToString();
-                    traductionPhraseEnEspagnol = DsLocalexo3.Tables["Phrases"].Rows[i]["textePhrase"].ToString();
+                    phraseEnFrancais = dsLocal.Tables["Phrases"].Rows[i]["traducPhrase"].ToString();
+                    traductionPhraseEnEspagnol = dsLocal.Tables["Phrases"].Rows[i]["textePhrase"].ToString();
                 }
             }
 
             //  Affichage de la phrase à traduire
             foreach (Label lbl in Exercice.Controls.OfType<Label>())
             {
-                if (lbl.Name == "lblPhraseEnFrancais")
+                if (lbl.Name == "lblPhraseATraduire")
                 {
-                    lbl.Text = "Traduction française de la phrase en espagnole à réordonner : " + phraseEnFrancais;
+                    lbl.Text = "Veuillez traduire la phrase suivante : " + phraseEnFrancais;
                 }
             }
 
-            // Affichage des label désordonnés
-            AffichageLabelDesordonnes(traductionPhraseEnEspagnol);
-
-            // Affichage du nombre d'aide(s) disponible pour l'utilisateur
-            foreach (Label lbl in Exercice.Controls.OfType<Label>())
+            // Nous récupérons les mots à cacher dans une liste
+            List<int> liste_pos_mots_a_cacher = new List<int>();
+            for (int i = 0; i < dsLocal.Tables["Exercices"].Rows.Count; i++)
             {
-                if (lbl.Name == "lblNbAideDispo")
+                if (cours == dsLocal.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == dsLocal.Tables["Exercices"].Rows[i]["numExo"].ToString())
                 {
-                    lbl.Text = "Nombre d'aide(s) disponible : " + (cptAide).ToString();
+                    string chaine_pos_mots_a_cacher = (string)dsLocal.Tables["Exercices"].Rows[i]["listeMots"];
+                    MessageBox.Show("La liste : " + chaine_pos_mots_a_cacher); // PETIT TESTE
+                    // Vu que nous avons récupéré un string, il va falloir récupérer chaque valeur de cette chaîne (en int) pour la mettre dans la liste
+                    string[] tab_pos_mots_a_cacher = chaine_pos_mots_a_cacher.Split('/');
+                    // Nous ajoutons maintenant chaque valeur de ce tableau dans la liste
+                    foreach (string pos in tab_pos_mots_a_cacher)
+                    {
+                        int pos_en_int = Convert.ToInt32(pos);
+                        liste_pos_mots_a_cacher.Add(pos_en_int);
+                    }
                 }
+
             }
+
+
+            //Affichage de la phrase en espagnol
+            AffichePhraseEspagnolACompleter(traductionPhraseEnEspagnol, liste_pos_mots_a_cacher);       // CHANGER LE NOM DE LA PROCEDURE
+
+
+        }
+        private void btnCommencerExo_Click3(object sender, EventArgs e)
+        {
 
 
         }
@@ -1186,7 +1019,7 @@ namespace Mise_En_Commun
             for (int i = 0; i < motsPhraseEspagnolExo3.Length; i++)
             {
                 string motActuelle = motsPhraseEspagnolExo3[i];
-              //  MessageBox.Show(motActuelle);
+                //  MessageBox.Show(motActuelle);
             }
 
             // Pour chaque mot dans le tableau "motsPhraseEspagnolExo3", on crée un label à une certaine position ET un sous-panel
@@ -1278,7 +1111,7 @@ namespace Mise_En_Commun
             Label lblPhraseTraductionEspagnol = new Label();
             lblPhraseTraductionEspagnol.Left = XleftLabel;
             lblPhraseTraductionEspagnol.Top = XtopLabel;
-            lblPhraseTraductionEspagnol.Name = "lblPhraseTraductionEspagnol";   
+            lblPhraseTraductionEspagnol.Name = "lblPhraseTraductionEspagnol";
             lblPhraseTraductionEspagnol.BackColor = System.Drawing.Color.Orange;
             lblPhraseTraductionEspagnol.Size = new System.Drawing.Size(155, 34);
             lblPhraseTraductionEspagnol.Tag = valTagLabel;
@@ -1592,15 +1425,6 @@ namespace Mise_En_Commun
 
         private void Exo_Glissage_Mot()
         {
-            /*Génération dynamique du bouton commencer exo*/
-            Button btnCommencerExo = new Button();
-            btnCommencerExo.Location = new System.Drawing.Point(50, 171);
-            btnCommencerExo.Name = "btnCommencerExo";
-            btnCommencerExo.Size = new System.Drawing.Size(205, 74);
-            btnCommencerExo.Text = "Commencer exo";
-            btnCommencerExo.Click += new System.EventHandler(this.btnCommencerExo_Click3);
-            Exercice.Controls.Add(btnCommencerExo);
-
 
             Button btnSolution = new Button();
             btnSolution.Location = new System.Drawing.Point(1005, 501);
@@ -1660,6 +1484,85 @@ namespace Mise_En_Commun
             this.Controls.Add(Exercice);
 
 
+            connec.ConnectionString = chcon;
+
+            RamenerToutesLesTablesEnLocale3();
+            //Pour vérifier si y a toutes les tables (si c'est 12 --> c'est bon)
+            int nbTableDansDataSet = DsLocalexo3.Tables.Count;
+            //  MessageBox.Show("Nb de tables dans le DataSet : " + nbTableDansDataSet.ToString());
+
+            // Rechercher l'énoncé
+            // Pour ça, il faut d'abord savoir à quelle cours et quelle leçon je suis. Mais vu que jsp encore comment faire je le fais avec des trucs choisis moi
+            // Je récup le nom cours (dans un string), le num (dans un int) de la leçon et le numéro de l'exo (dans un int)
+            string cours = "DEBUT1";   // J'initialise avec des valeurs choisis par moi (non au hasard) pck je ne sais pas encore comment récup là où on s'est arrêté
+            int numLecon = 5;
+            int numExo = 8;
+
+            // Une fois récup, je parcours toutes les ligne de la table Exercices pour trouver la ligne (dans la B.D.) correspondant au cours, leçon et exercice actuel
+            for (int i = 0; i < DsLocalexo3.Tables["Exercices"].Rows.Count; i++)
+            {
+                // "Si le cours récup est le même que dans la ligne ET le num de la leçon récup est le même que la ligne ET le num de l'exercice est le même que dans la ligne ALORS"
+                if (cours == DsLocalexo3.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numExo"].ToString())
+                {
+                    foreach (Label lbl in Exercice.Controls.OfType<Label>())
+                    {
+                        if (lbl.Name == "lblEnonce")
+                        {
+                            lbl.Text = "Énoncé : " + DsLocalexo3.Tables["Exercices"].Rows[i]["enonceExo"].ToString() + ".";
+                        }
+                    }
+                }
+            }
+
+            // Rechercher une phrase à traduire
+            // On récup le num du cours, leçon etc... (déjà fais en haut)
+            //Ensuite je parcours la table Exercices et je récup le codePhrase
+            int codePhrase = 0; // Tjrs initialiser à 0
+            for (int i = 0; i < DsLocalexo3.Tables["Exercices"].Rows.Count; i++)
+            {
+                // "Si le cours récup est le même que dans la ligne ET le num de la leçon récup est le même que la ligne ET le num de l'exercice est le même que dans la ligne ALORS"
+                if (cours == DsLocalexo3.Tables["Exercices"].Rows[i]["numCours"].ToString() && numLecon.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numLecon"].ToString() && numExo.ToString() == DsLocalexo3.Tables["Exercices"].Rows[i]["numExo"].ToString())
+                {
+                    codePhrase = (int)DsLocalexo3.Tables["Exercices"].Rows[i]["codePhrase"];
+                }
+            }
+
+            string phraseEnFrancais = "";
+            string traductionPhraseEnEspagnol = "";
+
+            //Parcourt de toutes les lignes de la table "Phrases"
+            for (int i = 0; i < DsLocalexo3.Tables["Phrases"].Rows.Count; i++)
+            {
+                if ((int)DsLocalexo3.Tables["Phrases"].Rows[i]["codePhrase"] == codePhrase)
+                {
+                    phraseEnFrancais = DsLocalexo3.Tables["Phrases"].Rows[i]["traducPhrase"].ToString();
+                    traductionPhraseEnEspagnol = DsLocalexo3.Tables["Phrases"].Rows[i]["textePhrase"].ToString();
+                }
+            }
+
+            //  Affichage de la phrase à traduire
+            foreach (Label lbl in Exercice.Controls.OfType<Label>())
+            {
+                if (lbl.Name == "lblPhraseEnFrancais")
+                {
+                    lbl.Text = "Traduction française de la phrase en espagnole à réordonner : " + phraseEnFrancais;
+                }
+            }
+
+            // Affichage des label désordonnés
+            AffichageLabelDesordonnes(traductionPhraseEnEspagnol);
+
+            // Affichage du nombre d'aide(s) disponible pour l'utilisateur
+            foreach (Label lbl in Exercice.Controls.OfType<Label>())
+            {
+                if (lbl.Name == "lblNbAideDispo")
+                {
+                    lbl.Text = "Nombre d'aide(s) disponible : " + (cptAide).ToString();
+                }
+            }
+
+
+
         }
 
         private void lblPhraseTraductionEspagnol_MouseDown(object sender, MouseEventArgs e)
@@ -1715,40 +1618,14 @@ namespace Mise_En_Commun
         private void btnValider_Click3(object sender, EventArgs e)
         {
 
-            /*Nous rajoutons dans une liste la réponse finale de l'utilisateur*/
             recupererReponseUtilisateur();
 
-            /*Pour vérifier j'affiche la liste (ca marche très bien)*/
-            /*for (int i=0; i<reponse_utilisateur.Count; i++)
-            {
-                MessageBox.Show(reponse_utilisateur[i]);
-            }*/
-
             verifierReponseUtilisateur();
-
-            // Pour chaque label on va essayer de lui donner un Tag qui est = au Tag du sous-panel dans lequel le label est (PEUT ETRE QUE J'EN AURAI BESOIN)
-            /*foreach (Panel sous_panel in this.Controls.OfType<Panel>())
-            {
-                foreach (Label lbl in sous_panel.Controls.OfType<Label>())
-                {
-                    MessageBox.Show("tkt2");        // ça me le fait 12 fois, voir sur papier exécution exact
-                    // Si le label actuel "labelActu" est dans le sous-panel actuel "sous_panel_actu" (trouvé grâce à une fonction à faire encore), alors on assigne le Tag du sous-panel_actu au labelActu
-                    if ( sous_panel.Contains(lbl) )   // ça rentre pas dans la boucle donc c à cause de la fonction
-                    {
-                        //MessageBox.Show("Normalement ça m'affiche ça 2 fois");
-                        lbl.Tag = sous_panel.Tag;
-                        //MessageBox.Show("tkt");
-
-                        // Petit test
-                        MessageBox.Show("Tag du sous panel '" + sous_panel.Name + "' : " + sous_panel.Tag.ToString() + " -- Tag du label '" + lbl.Name + "' : " + lbl.Tag.ToString());
-                    }
-                }
-            }*/
 
         }
 
         public void recupererReponseUtilisateur()
-        { 
+        {
             foreach (Panel sous_panel in Exercice.Controls.OfType<Panel>())
             {
                 foreach (Label lbl in sous_panel.Controls.OfType<Label>())
@@ -1910,7 +1787,7 @@ namespace Mise_En_Commun
                     Xlbl.Left = 0;
                     Xlbl.Top = 0;
                     //Test
-                   // MessageBox.Show("Le mot '" + Xlbl.Text + "' va dans le panel '" + Xsous_panel.Tag.ToString() + "'");
+                    // MessageBox.Show("Le mot '" + Xlbl.Text + "' va dans le panel '" + Xsous_panel.Tag.ToString() + "'");
                 }
             }
 
@@ -2084,26 +1961,21 @@ namespace Mise_En_Commun
         }
 
 
-    private void Exo_Suivant(object sender, EventArgs e)
+        private void Exo_Suivant(object sender, EventArgs e)
         {
             Exercice.Controls.Clear();
             exoNum = exoNum + 1;
+            string requêteTypeExo = @"SELECT * FROM Exercices 
+            Where [numExo] = " + exoNum + "And [numLecon] = " + leconNum + "And [numCours] =" + coursNum;
+                
             // MessageBox.Show(exoNum.ToString());
-            string requêteVoc = "@SELECT enonceExo FROM Exercices " +
-               "where [numExo] = " + exoNum + " and [numCours] = '" + coursNum + " and [numLecon] = " + leconNum + " and [codePhrase] == 0";
-            OleDbCommand cd = new OleDbCommand();
-            cd.Connection = connec;
-            cd.CommandType = CommandType.Text;
-            cd.CommandText = requêteVoc;
-            string Vocabulaire = cd.ExecuteScalar().ToString();
-            string requêteTypeExo  = "@SELECT enonceExo FROM Exercices " +
-                "where [numExo] = "+ exoNum + " and [numCours] = '"+ coursNum+ " and [numLecon] = "+leconNum+"";
-            OleDbCommand cd1 = new OleDbCommand();
-            cd1.Connection = connec;
-            cd1.CommandType = CommandType.Text;
-            cd1.CommandText = requêteTypeExo;
-            string TypeExo = cd.ExecuteScalar().ToString();
-            if (TypeExo.Substring(0, 3) == "Con" || TypeExo.Substring(0, 3) == "Pré")
+            OleDbCommand cd1 = new OleDbCommand(requêteTypeExo, connec);
+            OleDbDataAdapter da = new OleDbDataAdapter();
+            da.SelectCommand = cd1;
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            if (int.Parse(dt.Rows[0][8].ToString()) != 0 || dt.Rows[0][8] != null)
             {
                 Exo_Conjugaison();
                 dico.Add(exoNum, listDico);
@@ -2111,7 +1983,7 @@ namespace Mise_En_Commun
                 RemplirTableLocal();
                 exoNum++;
             }
-            else if (TypeExo.Substring(0, 9) == "Complétez")
+            else if (int.Parse(dt.Rows[0][)
             {
                 Exo_Mot_à_trou();
                 dico.Add(exoNum, listDico);
@@ -2128,8 +2000,8 @@ namespace Mise_En_Commun
                 exoNum++;
             }
             else if (exoNum > 15)
-            PDF();
-            else 
+                PDF();
+            else
             {
                 Exo_Glissage_Mot();
                 dico.Add(exoNum, listDico);
@@ -2225,7 +2097,7 @@ namespace Mise_En_Commun
             DataColumn[] PrimaryKeyColumns = new DataColumn[1];
             PrimaryKeyColumns[0] = TableLocal.Columns["NumElementPDF"];
             TableLocal.PrimaryKey = PrimaryKeyColumns;
-            foreach ( KeyValuePair<int,List<string>> kvp in dico)
+            foreach (KeyValuePair<int, List<string>> kvp in dico)
             {
                 incrematationTableLocal++;
                 row = TableLocal.NewRow();
@@ -2234,12 +2106,12 @@ namespace Mise_En_Commun
                 row["NumExoPDF"] = kvp.Key;
                 row["numCoursPDF"] = user.getExosInfo()[0, 2];
                 row["numLeconPDF"] = user.getExosInfo()[0, 1];
-                if ( kvp.Value != null)
+                if (kvp.Value != null)
                 {
-                    for ( int i = 0; i<kvp.Value.Count;i++)
+                    for (int i = 0; i < kvp.Value.Count; i++)
                     {
                         row["JusteouFaux"] = false;
-                        if ( i%2!= 0 )
+                        if (i % 2 != 0)
                         {
                             row["Erreur"] = kvp.Value[i];
                         }
@@ -2248,7 +2120,7 @@ namespace Mise_En_Commun
                             row["Correction"] = kvp.Value[i];
                         }
                     }
-               
+
                 }
                 else
                 {
